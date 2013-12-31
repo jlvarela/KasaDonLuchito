@@ -1,0 +1,126 @@
+/*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package entities;
+
+import java.io.Serializable;
+import java.util.List;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+
+/**
+ *
+ * @author victor
+ */
+@Entity
+public class Dispositivo implements Serializable {
+    private static final long serialVersionUID = 1L;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
+    
+    @Column(nullable = false, unique = true)
+    private Integer idInterno;
+    
+    @ManyToOne
+    @JoinColumn(nullable = false)
+    private Arduino arduino;
+    
+    @ManyToOne
+    @JoinColumn(nullable = false)
+    private TipoDispositivo tipo;
+    
+    private int valor;
+    
+    private List<Integer> pines;
+    
+    private List<Integer> configuraciones;
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public Integer getIdInterno() {
+        return idInterno;
+    }
+
+    public void setIdInterno(Integer idInterno) {
+        this.idInterno = idInterno;
+    }
+
+    public Arduino getArduino() {
+        return arduino;
+    }
+
+    public void setArduino(Arduino arduino) {
+        this.arduino = arduino;
+    }
+
+    public TipoDispositivo getTipo() {
+        return tipo;
+    }
+
+    public void setTipo(TipoDispositivo tipo) {
+        this.tipo = tipo;
+    }
+
+    public int getValor() {
+        return valor;
+    }
+
+    public void setValor(int valor) {
+        this.valor = valor;
+    }
+
+    public List<Integer> getPines() {
+        return pines;
+    }
+
+    public void setPines(List<Integer> pines) {
+        this.pines = pines;
+    }
+
+    public List<Integer> getConfiguraciones() {
+        return configuraciones;
+    }
+
+    public void setConfiguraciones(List<Integer> configuraciones) {
+        this.configuraciones = configuraciones;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 0;
+        hash += (id != null ? id.hashCode() : 0);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object object) {
+        // TODO: Warning - this method won't work in the case the id fields are not set
+        if (!(object instanceof Dispositivo)) {
+            return false;
+        }
+        Dispositivo other = (Dispositivo) object;
+        if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public String toString() {
+        return "entities.Dispositivo[ id=" + id + " ]";
+    }
+    
+}
