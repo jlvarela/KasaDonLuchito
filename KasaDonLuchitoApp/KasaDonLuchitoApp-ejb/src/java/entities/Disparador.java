@@ -5,6 +5,7 @@
 package entities;
 
 import java.io.Serializable;
+import java.util.LinkedList;
 import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -38,6 +39,10 @@ public class Disparador implements Serializable {
     
     @ManyToOne
     private Escena escenaQueAcciona;
+
+    public Disparador() {
+        condiciones = new LinkedList<CondicionDisparador>();
+    }
 
     public Integer getId() {
         return id;

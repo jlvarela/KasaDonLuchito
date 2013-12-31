@@ -5,6 +5,7 @@
 package entities;
 
 import java.io.Serializable;
+import java.util.LinkedList;
 import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -22,10 +23,6 @@ import javax.persistence.OneToMany;
  */
 @Entity
 public class Usuario implements Serializable {
-    @OneToMany(mappedBy = "usuario")
-    private List<PermisoDispositivo> permisoDispositivos;
-    @ManyToMany(mappedBy = "usuariosPermitidos")
-    private List<Escena> escenasPermitidas;
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -40,6 +37,17 @@ public class Usuario implements Serializable {
     @ManyToOne
     @JoinColumn(nullable = false)
     private TipoUsuario tipoUsuario;
+    
+    @OneToMany(mappedBy = "usuario")
+    private List<PermisoDispositivo> permisoDispositivos;
+    
+    @ManyToMany(mappedBy = "usuariosPermitidos")
+    private List<Escena> escenasPermitidas;
+
+    public Usuario() {
+        permisoDispositivos = new LinkedList<PermisoDispositivo>();
+        escenasPermitidas = new LinkedList<Escena>();
+    }
 
     public Integer getId() {
         return id;
@@ -71,6 +79,22 @@ public class Usuario implements Serializable {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public List<PermisoDispositivo> getPermisoDispositivos() {
+        return permisoDispositivos;
+    }
+
+    public void setPermisoDispositivos(List<PermisoDispositivo> permisoDispositivos) {
+        this.permisoDispositivos = permisoDispositivos;
+    }
+
+    public List<Escena> getEscenasPermitidas() {
+        return escenasPermitidas;
+    }
+
+    public void setEscenasPermitidas(List<Escena> escenasPermitidas) {
+        this.escenasPermitidas = escenasPermitidas;
     }
 
     @Override

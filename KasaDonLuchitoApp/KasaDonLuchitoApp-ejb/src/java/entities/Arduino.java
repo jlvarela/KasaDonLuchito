@@ -5,6 +5,7 @@
 package entities;
 
 import java.io.Serializable;
+import java.util.LinkedList;
 import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -32,6 +33,10 @@ public class Arduino implements Serializable {
     
     @OneToMany(mappedBy = "arduino")
     private List<Dispositivo> dispositivos;
+
+    public Arduino() {
+        dispositivos = new LinkedList<Dispositivo>();
+    }
 
     public List<Dispositivo> getDispositivos() {
         return dispositivos;

@@ -5,6 +5,7 @@
 package entities;
 
 import java.io.Serializable;
+import java.util.LinkedList;
 import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -28,6 +29,9 @@ public class Dispositivo implements Serializable {
     @Column(nullable = false, unique = true)
     private Integer idInterno;
     
+    @Column(nullable = false, unique = true)
+    private String nombre;
+    
     @ManyToOne
     @JoinColumn(nullable = false)
     private Arduino arduino;
@@ -41,6 +45,11 @@ public class Dispositivo implements Serializable {
     private List<Integer> pines;
     
     private List<Integer> configuraciones;
+
+    public Dispositivo() {
+        pines = new LinkedList<Integer>();
+        configuraciones = new LinkedList<Integer>();
+    }
 
     public Integer getId() {
         return id;
@@ -56,6 +65,14 @@ public class Dispositivo implements Serializable {
 
     public void setIdInterno(Integer idInterno) {
         this.idInterno = idInterno;
+    }
+
+    public String getNombre() {
+        return nombre;
+    }
+
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
     }
 
     public Arduino getArduino() {
@@ -96,6 +113,29 @@ public class Dispositivo implements Serializable {
 
     public void setConfiguraciones(List<Integer> configuraciones) {
         this.configuraciones = configuraciones;
+    }
+    
+    public boolean isActuador() {
+        return this.tipo.isActuador();
+    }
+    
+    public List<Integer> getValoresPosibles() {
+        if (this.tipo.isRangoValores()) {
+            LinkedList<Integer> res = new LinkedList<Integer>();
+            Integer primero, ultimo;
+            if (this.tipo.getValoresPosibles().isEmpty()) {
+                return res;
+            }
+            primero = this.tipo.getValoresPosibles().get(0);
+            ultimo = this.tipo.getValoresPosibles().get(this.tipo.getValoresPosibles().size()-1);
+            for(int i = primero; i < ultimo; i++) {
+                res.add(new Integer(i));
+            }
+            return res;
+        }
+        else {
+            return this.tipo.getValoresPosibles();
+        }
     }
 
     @Override

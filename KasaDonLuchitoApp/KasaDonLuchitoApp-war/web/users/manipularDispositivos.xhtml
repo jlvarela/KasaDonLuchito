@@ -1,0 +1,71 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      contentType="text/html">
+
+    <body>
+
+        <ui:composition template="/mainTemplate.xhtml">
+
+            <ui:define name="titulo">
+                Manipular Dispositivos
+            </ui:define>
+            
+            <!--<ui:define name="botonesBarra">
+                
+            </ui:define> -->
+            
+            <ui:define name="centro">
+                <h:form>
+                    <p:outputLabel value="Cantidad de dispositivos administrados: #{mantenedorDispositivosVerListado.lista.size()}"/>
+                    <p:panelGrid columns="5" styleClass="centrar" >
+                        <f:facet name="header">Listado de dispositivos</f:facet>
+                        
+                        <p:dataTable value="#{mantenedorDispositivosVerListado.lista}" var="disp" 
+                                     emptyMessage="No hay dispositivos registrados en el sistema" 
+                                     filteredValue="#{mantenedorDispositivosVerListado.listaBusqueda}">
+                            <p:column headerText="N°" sortBy="#{disp.idInterno}" >
+                                <h:outputText value="#{disp.idInterno}"/>
+                            </p:column>
+                            <p:column headerText="Nombre" sortBy="#{disp.nombre}" filterMatchMode="contains" filterBy="#{disp.nombre}">
+                                <h:outputText value="#{disp.nombre}"/>
+                            </p:column>
+                            <p:column headerText="Valor" width="100px;">
+                                <h:inputText id="valor" value="#{disp.valor}">
+                                    <f:ajax event="change" listener="#{mantenedorDispositivosVerListado.cambioDispositivo(disp.id, disp.valor)}"/>
+                                </h:inputText>
+                                <p:slider for="valor" minValue="#{disp.minimoValorPosible}" maxValue="#{disp.maximoValorPosible}" disabled="#{disp.sensor}"/>
+                            </p:column>
+                            <p:column headerText="" rendered="#{request.isUserInRole('Administrador')}">
+                                <p:commandLink value="  " styleClass=" ui-btn ui-icon-shadow ui-icon-pencil ui-icon" action="#{mantenedorDispositivosVerListado.editar(disp.id)}">
+                                </p:commandLink>
+                            </p:column>
+                            <p:column headerText="" rendered="#{request.isUserInRole('Administrador')}">
+                                <p:commandLink value="  " styleClass=" ui-btn ui-icon-shadow ui-icon-trash ui-icon" onclick="cd_#{disp.id}.show();" />
+
+                                <p:confirmDialog message="¿Está seguro que desea eliminar el dispositivo? ya no podrá ser utilizado"
+                                                 header="Confirmación de eliminación de dispositivo" severity="alert"
+                                                 widgetVar="cd_#{disp.id}" closeOnEscape="true">
+                                    <p:commandButton value="Si" actionListener="#{mantenedorDispositivosVerListado.eliminar(disp.id)}"
+                                                     oncomplete="cd_#{disp.id}.hide();"/>
+                                    <p:commandButton value="No" onclick="cd_#{disp.id}.hide();" type="button" />
+                                </p:confirmDialog>
+                            </p:column>
+                        </p:dataTable>
+
+                        <f:facet name="footer">
+                            <p:button value="Agregar dispositivo" href="/faces/users/admin/agregarDispositivo.xhtml" rendered="#{request.isUserInRole('Administrador')}"/>
+                            <p:button value="Agregar arduino" href="/faces/admin/agregarArduino.xhtml" rendered="#{request.isUserInRole('Administrador')}"/>
+                         </f:facet>
+                    </p:panelGrid>
+                </h:form>
+            </ui:define>
+
+        </ui:composition>
+
+    </body>
+</html>

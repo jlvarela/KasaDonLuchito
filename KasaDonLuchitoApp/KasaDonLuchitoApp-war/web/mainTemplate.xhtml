@@ -1,0 +1,98 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      contentType="text/html"
+      xmlns:ezcomp="http://java.sun.com/jsf/composite/ezcomp">
+
+    
+    <h:head>
+        <f:facet name="first">
+            <meta content='text/html; charset=UTF-8' http-equiv="Content-Type"/>
+            <h:outputStylesheet library="css" name="css/bootstrap.css" />
+            <h:outputStylesheet library="css" name="css/personalizados.css" />
+            <link rel="icon" href="#{request.contextPath}/resources/img/icon.png"/>
+            <title><ui:insert name="titulo">Mi KaaZa</ui:insert></title>
+        </f:facet>
+    </h:head>
+
+    <body data-tarjet=".bs-docs-sidebar" data-spy="scroll" data-twttr-rendered="true" style="background:url('#{request.contextPath}/resources/img/Fondo2.jpg')">
+        
+        <p:overlayPanel id="menu" for=":form_botones_barra:btnPanelContext" rendered="#{request.isUserInRole('Administrador') 
+                                                             || request.isUserInRole('Usuario')}">
+            <h:form>
+                <p:panelGrid columns="1"> 
+                    <f:facet name="header">Menu de Mi KaaZa
+                        <h:outputLabel value="#{request.getRemoteUser()}"/>
+                    </f:facet>
+                    <h:outputLink value="#{request.contextPath}/faces/users/admin/config/configuracionSistema.xhtml" rendered="#{request.isUserInRole('Administrador')}">Configuración sistema</h:outputLink>
+                    <h:outputLink value="#{request.contextPath}/faces/users/admin/agregarDispositivo.xhtml" rendered="#{request.isUserInRole('Administrador')}">Agregar dispositivo</h:outputLink>
+                    <h:outputLink value="#{request.contextPath}/faces/users/admin/agregarArduino.xhtml" rendered="#{request.isUserInRole('Administrador')}">Agregar Arduino</h:outputLink>
+                    <h:outputLink value="#{request.contextPath}/faces/users/manipularDispositivos.xhtml">Manipular dispositivos</h:outputLink>
+                    <h:outputLink value="#{request.contextPath}/faces/users/disparadores.xhtml">Ver disparadores</h:outputLink>
+                    <h:outputLink value="#{request.contextPath}/faces/users/timers.xhtml">Ver timers</h:outputLink>
+                    <h:commandLink action="#{autenticadorMB.logout()}">Cerrar sesión</h:commandLink>
+                </p:panelGrid>
+            </h:form>
+        </p:overlayPanel>
+        
+        <div class="navbar navbar-inverse navbar-fixed-top" style="z-index: 1000 !important;">
+        	<div class="navbar-inner">
+                    <div class="row-fluid special">
+                    	<div class="span2">
+                            <h:form id="form_botones_barra" style="margin:0px;">
+                                <p>
+                                    <ezcomp:boton_barra_superior rendered="false"
+                                                             classIcon="ui-icon-bars" type="button"
+                                                             title="Menú principal"
+                                                             id="btnPanelContext2"/>
+                                    
+                                    <p:outputPanel rendered="#{request.isUserInRole('Administrador') 
+                                                             || request.isUserInRole('Usuario')}">
+                                        <a class="btn-menu-superior">
+                                            <span class="ui-btn-inner">
+                                                <span class="ui-icon ui-icon-shadow ui-icon-bars">
+                                                </span>
+                                            </span>
+                                            <h:commandButton type="button" id="btnPanelContext" value="  " title="Menú principal"
+                                                            styleClass="transparente command_btn_barra_superior"/>
+                                        </a>
+                                    </p:outputPanel>
+                                    <ui:insert name="botonesBarra"></ui:insert>
+                                </p>
+                            </h:form>
+                        </div>
+                        <div class="span8 text-center">
+                            <h3 style="line-height:20px; color: white;"><ui:insert name="titulo">Mi KaaZa</ui:insert></h3>
+                        </div>
+                        <div class="span2 text-right">
+                            <h:graphicImage alt="Logo Mi KaaZa" 
+                                            width="200px" height="115px"
+                                            url="/resources/img/icon2.jpg"/>
+                        </div>
+                    </div>
+                </div>
+        </div>
+        
+        
+        <div class="container-fluid">
+            <div class="row-fluid">
+                <div class="span12 text-center">
+                    <ui:insert name="centro">centro</ui:insert>
+                </div>
+            </div>
+            <div class="row-fluid text-center">
+                <footer class="footer span12"> Automatización de procesos 2013-2 - U de Santiago</footer>
+            </div>
+        </div>
+        <div class="sobreBarra">
+            <h:form id="formMsj">
+                <p:growl id="growl_msj_accion" />
+            </h:form>
+        </div>
+      
+    </body>
+</html>
