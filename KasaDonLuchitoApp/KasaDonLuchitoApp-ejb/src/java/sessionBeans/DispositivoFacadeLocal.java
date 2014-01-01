@@ -28,5 +28,7 @@ public interface DispositivoFacadeLocal {
     List<Dispositivo> findRange(int[] range);
 
     int count();
+
+    public void accion(Integer id, int valor);
     
 }

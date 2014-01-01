@@ -35,10 +35,15 @@
                                 <h:outputText value="#{disp.nombre}"/>
                             </p:column>
                             <p:column headerText="Valor" width="100px;">
-                                <h:inputText id="valor" value="#{disp.valor}">
-                                    <f:ajax event="change" listener="#{mantenedorDispositivosVerListado.cambioDispositivo(disp.id, disp.valor)}"/>
-                                </h:inputText>
-                                <p:slider for="valor" minValue="#{disp.minimoValorPosible}" maxValue="#{disp.maximoValorPosible}" disabled="#{disp.sensor}"/>
+                                <h:inputHidden id="inputValor" value="#{disp.valor}"/>
+                                    <h:outputText id="outputValor" value="#{disp.valor}"/>
+                                    
+                                    <p:slider display="outputValor" for="inputValor" minValue="#{disp.minimoValorPosible}" maxValue="#{disp.maximoValorPosible}" disabled="#{disp.sensor}">
+                                        <f:param name="id" value="#{disp.id}" />
+                                        <p:ajax event="slideEnd" listener="#{mantenedorDispositivosVerListado.cambioDispositivo}">
+                                            
+                                        </p:ajax>
+                                    </p:slider>
                             </p:column>
                             <p:column headerText="" rendered="#{request.isUserInRole('Administrador')}">
                                 <p:commandLink value="  " styleClass=" ui-btn ui-icon-shadow ui-icon-pencil ui-icon" action="#{mantenedorDispositivosVerListado.editar(disp.id)}">

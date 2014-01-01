@@ -55,6 +55,19 @@ public class PobladoInicial implements PobladoInicialLocal {
         d1.setTipo(tiposDeDispositivos.get(4));
         d1.getPines().add(new Integer(13));
         
+        Dispositivo d2 = new Dispositivo();
+        d2.setArduino(arduino);
+        arduino.getDispositivos().add(d2);
+        d2.setNombre("Luz dimmer pin9");
+        d2.setIdInterno(2);
+        d2.setValor(0);
+        d2.setTipo(tiposDeDispositivos.get(5));
+        d2.getPines().add(new Integer(9));
+        
+        dispositivos = new LinkedList<Dispositivo>();
+        dispositivos.add(d1);
+        dispositivos.add(d2);
+        
         Usuario user = new Usuario();
         user.setUsername("admin");
         user.setTipoUsuario(tiposDeUsuarios.get(0));
@@ -63,6 +76,7 @@ public class PobladoInicial implements PobladoInicialLocal {
         persist(user);
         persist(arduino);
         persist(d1);
+        persist(d2);
         
         Logger.getLogger(getClass().getName()).log(Level.INFO, "Realizado poblado inicial");
     }

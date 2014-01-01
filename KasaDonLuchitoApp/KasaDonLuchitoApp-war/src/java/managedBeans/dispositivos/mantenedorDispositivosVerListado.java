@@ -7,11 +7,16 @@ package managedBeans.dispositivos;
 import entities.Dispositivo;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.annotation.ManagedBean;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.inject.Named;
 import javax.enterprise.context.RequestScoped;
+import javax.faces.context.FacesContext;
+import org.primefaces.event.SlideEndEvent;
 import pojos.DispositivoPojo;
 import sessionBeans.DispositivoFacadeLocal;
 
@@ -56,8 +61,22 @@ public class mantenedorDispositivosVerListado {
     public mantenedorDispositivosVerListado() {
     }
     
-    public void cambioDispositivo(int id, int valor) {
-        System.out.println("Se ha intentado cambiar el valor del dispositivo: "+id + " con el valor: "+valor);
+    public void cambioDispositivo(SlideEndEvent e) {
+        FacesContext fc = FacesContext.getCurrentInstance();
+        Map<String,String> params = 
+        fc.getExternalContext().getRequestParameterMap();
+        String data =  params.get("id");
+        int id;
+        try {
+            id = Integer.parseInt(data);
+        }
+        catch (NumberFormatException nfe) {
+            Logger.getLogger(getClass().getName()).log(Level.WARNING, "Error de parseo del id al hacer ajax");
+            return;
+        }
+        int valor = e.getValue();
+        Logger.getLogger(getClass().getName()).log(Level.INFO, "Id dispositivo: {0} con el valor: {1}", new Object[]{data, valor});
+        dispositivoFacade.accion(id, valor);
     }
 
     public List<DispositivoPojo> getLista() {
@@ -70,6 +89,14 @@ public class mantenedorDispositivosVerListado {
 
     public void setListaBusqueda(List<DispositivoPojo> listaBusqueda) {
         this.listaBusqueda = listaBusqueda;
+    }
+
+    public DispositivoFacadeLocal getDispositivoFacade() {
+        return dispositivoFacade;
+    }
+
+    public void setDispositivoFacade(DispositivoFacadeLocal dispositivoFacade) {
+        this.dispositivoFacade = dispositivoFacade;
     }
     
 }

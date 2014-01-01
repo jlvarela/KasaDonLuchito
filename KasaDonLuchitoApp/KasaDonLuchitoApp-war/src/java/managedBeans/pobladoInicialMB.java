@@ -4,15 +4,10 @@
  */
 package managedBeans;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.ejb.EJB;
 import javax.inject.Named;
 import javax.enterprise.context.RequestScoped;
 import javax.faces.application.FacesMessage;
-import javax.naming.Context;
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
 import otros.CommonFunctions;
 import sessionBeans.PobladoInicialLocal;
 
