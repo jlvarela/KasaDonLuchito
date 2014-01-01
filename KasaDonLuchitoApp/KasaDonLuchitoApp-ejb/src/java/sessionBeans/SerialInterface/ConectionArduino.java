@@ -10,13 +10,17 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
 import javax.ejb.Singleton;
+import javax.ejb.Startup;
 
 /**
  *
  * @author victor
  */
 @Singleton
+@Startup
 public class ConectionArduino implements ConectionArduinoLocal {
     private List<ConectorSerial> conexionesArduinos;
 
@@ -24,6 +28,25 @@ public class ConectionArduino implements ConectionArduinoLocal {
     // "Insert Code > Add Business Method")
     public ConectionArduino() {
         conexionesArduinos = new LinkedList<ConectorSerial>();
+    }
+    
+    @PostConstruct 
+    public void init() { 
+       Logger.getLogger(getClass().getName()).log(Level.INFO, "Iniciando conector serial");
+    }
+    
+    @PreDestroy 
+    public void cleanup() {
+        Logger.getLogger(getClass().getName()).log(Level.INFO, "Cerrando conector serial para todos los arduino");
+        for(ConectorSerial c : conexionesArduinos) {
+            try {
+                Logger.getLogger(getClass().getName()).log(Level.INFO, "Cerrando el puerto serial");
+                c.close();
+            }
+            catch (Exception e) {
+                Logger.getLogger(getClass().getName()).log(Level.INFO, "Error al cerrar el puerto serial");
+            }
+        }
     }
     
     @Override

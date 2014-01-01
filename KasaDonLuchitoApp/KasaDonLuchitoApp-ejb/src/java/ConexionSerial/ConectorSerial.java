@@ -8,6 +8,7 @@ import gnu.io.*;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.Calendar;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -41,11 +42,33 @@ public class ConectorSerial implements SerialPortEventListener {
 
     //the timeout value for connecting with the port
     final static int TIMEOUT = 2000;
-
-    //some ascii values for for certain things
-    final static int SPACE_ASCII = 32;
-    final static int DASH_ASCII = 45;
-    final static int NEW_LINE_ASCII = 10;
+    
+    //Tipos de mensajes enviados al arduino
+    final static char TIPO_MSG_DEBUG = '0';
+    final static char TIPO_MSG_MAPEO_PINES = '1';
+    final static char TIPO_MSG_CONSULTA_DATOS = '2';
+    final static char TIPO_MSG_ACCION_DISPOSITIVO = '3';
+    //Tipos de mensajes recibidos desde el arduino
+    final static char TIPO_MSG_CONFIG_REALIZADA = '4';
+    final static char TIPO_MSG_ACCION_REALIZADA = '5';
+    final static char TIPO_MSG_DATOS_SENSOR = '6';
+    
+    final static int TAM_HEADER = 2;
+    final static int MAX_BODY = 126;
+    final static int TIEMPO_MAXIMO_REBOOT_MSG = 6000;
+    
+    byte[] headerMsg = new byte[TAM_HEADER];
+    byte[] bodyMsg = new byte[MAX_BODY+1];
+    int indexHeader;
+    int indexMsg;
+    boolean headerReceived;
+    boolean bodyReceived;
+    boolean validHeader;
+    boolean msgComplete;
+    boolean recepcionComenzada;
+    int tam_body_defined_in_header;
+    long previousMillis = 0;
+    long currentMillis = 0;
     
     public void initListener()
     {
@@ -70,9 +93,6 @@ public class ConectorSerial implements SerialPortEventListener {
         {
             //the method below returns an object of type CommPort
             System.out.println("Intentando abrir puerto");
-            if (selectedPortIdentifier == null) {
-                System.out.println("SelectedPortIdentifier is null " + selectedPort);
-            }
             commPort = selectedPortIdentifier.open("TigerControlPanel", TIMEOUT);
             System.out.println("Puerto abierto");
             //the CommPort object can be casted to a SerialPort object
@@ -82,15 +102,13 @@ public class ConectorSerial implements SerialPortEventListener {
             SerialPort.STOPBITS_1,
             SerialPort.PARITY_NONE);
             connected = true;
-            System.out.println("Puerto configurado");
             try {
                 input = serialPort.getInputStream();
                 output = serialPort.getOutputStream();
+                Logger.getLogger(ConectorSerial.class.getName()).log(Level.INFO, null, "Arduino Conectado en "+selectedPort);
             } catch (IOException ex) {
                 Logger.getLogger(ConectorSerial.class.getName()).log(Level.SEVERE, null, ex);
-                System.out.println(ex.getMessage());
             }
-            System.out.println("Arduino Conectado en "+selectedPort);
             initListener();
             return true;
         }
@@ -115,7 +133,7 @@ public class ConectorSerial implements SerialPortEventListener {
         try {
             
             Thread.sleep(100);
-            System.out.println("Escribiendo :"+datosRes.toString());
+            //System.out.println("Escribiendo :"+datosRes.toString());
             output.write(datosRes);
             output.flush();
             successful = true;
@@ -131,6 +149,79 @@ public class ConectorSerial implements SerialPortEventListener {
     
     @Override
     public void serialEvent(SerialPortEvent evt) {
+        byte inByte = 0;
+        currentMillis = Calendar.getInstance().getTimeInMillis();
+        if (msgComplete) {
+            llegoMensaje();
+            rebootVarsMsg();
+            try {
+                Thread.sleep(1);
+            } catch (InterruptedException ex) {
+                Logger.getLogger(ConectorSerial.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+
+
+        if (evt.getEventType() == SerialPortEvent.DATA_AVAILABLE) {
+            //Se intenta recibir un header
+            if (!headerReceived) {
+                try {
+                    inByte = (byte)input.read();
+                } catch (IOException ex) {
+                    Logger.getLogger(ConectorSerial.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                recepcionComenzada = true;
+                previousMillis = currentMillis;
+
+                headerMsg[indexHeader++] = inByte;
+                if (indexHeader >= TAM_HEADER) {
+                    validHeader = validateHeader(headerMsg);
+                    tam_body_defined_in_header = (int)headerMsg[1];
+                    headerReceived = true;
+                }
+            }
+            //Se intenta recibir el cuerpo del mensaje
+            else if (!bodyReceived) {
+                try {
+                    inByte = (byte)input.read();
+                } catch (IOException ex) {
+                    Logger.getLogger(ConectorSerial.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                recepcionComenzada = true;
+                previousMillis = currentMillis;
+
+                if (validHeader) {
+                    bodyMsg[indexMsg++] = inByte;
+                    if (indexMsg >= tam_body_defined_in_header) {
+                        bodyMsg[indexMsg] = 0; //Caracter terminador de string
+                        bodyReceived = true;
+                        msgComplete = true;
+                    }
+                }
+            }
+
+            //Se ha recibido tanto el header como el body
+            else {
+                rebootVarsMsg();
+            }
+
+        }
+        //No hay bytes por leer
+        else {
+            if (currentMillis < previousMillis) {
+                previousMillis = 0; //Se desbordó
+            }
+            if(currentMillis - previousMillis > TIEMPO_MAXIMO_REBOOT_MSG) {
+                previousMillis = currentMillis;
+                if (recepcionComenzada) {
+                    System.out.println("Reiniciando buffer de msg por timeout");
+                }
+
+                rebootVarsMsg();
+            }
+        }
+        
+        /*
         if (evt.getEventType() == SerialPortEvent.DATA_AVAILABLE)
         {
             try {
@@ -195,6 +286,7 @@ public class ConectorSerial implements SerialPortEventListener {
                 System.out.println("Error: "+e.getMessage());
             }
         }
+        */
     }
     
     
@@ -210,7 +302,6 @@ public class ConectorSerial implements SerialPortEventListener {
             //get only serial ports
             if (curPort.getPortType() == CommPortIdentifier.PORT_SERIAL)
             {
-                //window.cboxPorts.addItem(curPort.getName());
                 System.out.println("Agregando port: "+curPort.getName());
                 portMap.put(curPort.getName(), curPort);
                 listaPuertos.add(curPort.getName());
@@ -236,9 +327,69 @@ public class ConectorSerial implements SerialPortEventListener {
     }
 
     public ConectorSerial() {
-        searchForPorts();
+    }
+    
+    public void close() throws Exception{
+        serialPort.removeEventListener();
+        serialPort.close();
+        input.close();
+        output.close();
     }
     
     
+    void rebootVarsMsg() {
+        headerReceived = false;
+        bodyReceived = false;
+        indexHeader = 0;
+        indexMsg = 0;
+        msgComplete = false;
+        validHeader = false;
+        recepcionComenzada = false;
+    }
+
+    boolean validateHeader(byte[] header) {
+        //Se valida que el tipo de mensaje es correcto
+        if (((header[0] >= '4') && (header[0] <= '6')) || (header[0] <= '0')) {
+            //Se comprueba el tamaño del body que sigue
+            if (header[1] <= MAX_BODY) {
+                return true;
+            }
+        }
+        System.out.println("Llegó mensaje con header inválido");
+        return false;
+    }
     
+    
+    public void llegoMensaje() {
+        int largo = headerMsg[1];
+        if (headerMsg[0] == TIPO_MSG_DEBUG) {
+            StringBuilder strBuild = new StringBuilder();
+            for(int i = 0; i < largo; i++) {
+                strBuild.append((char)bodyMsg[i]);
+            }
+            System.out.println("Ha llegado el mensaje de debug: "+strBuild.toString());
+        }
+        else if (headerMsg[0] == TIPO_MSG_CONFIG_REALIZADA) {
+            int idConfirmadoConfiguracion = (int)bodyMsg[0];
+            System.out.println("Ha llegado un mensaje de confirmación de configuración al dispositivo con id: "+idConfirmadoConfiguracion);
+        }
+        else if (headerMsg[0] == TIPO_MSG_ACCION_REALIZADA) {
+            int idConfirmadoActuacion = (int)bodyMsg[0];
+            System.out.println("Ha llegado un mensaje de confirmación de acción al dispositivo con id: "+idConfirmadoActuacion);
+        }
+        else if (headerMsg[0] == TIPO_MSG_DATOS_SENSOR) {
+            int idSensor = (int)bodyMsg[0];
+            int valorRecibido = (int)bodyMsg[1];
+            System.out.println("Ha llegado un mensaje de datos del dispositivo con id: "+idSensor + " con valor: "+valorRecibido);
+        }
+        else {
+            System.out.println("Ha llegado un mensaje desconocido con header" + (char)headerMsg[0]);
+            StringBuilder strBuild = new StringBuilder();
+            for(int i = 0; i < largo; i++) {
+                strBuild.append((char)bodyMsg[i]);
+            }
+            System.out.println("Se ha intentado interpretar como: "+strBuild.toString());
+        }
+        
+    }
 }

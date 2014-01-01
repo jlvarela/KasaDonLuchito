@@ -48,6 +48,12 @@ public class DispositivoFacade extends AbstractFacade<Dispositivo> implements Di
             return;
         }
         conectionArduino.accionar(disp, valor);
+        actualizarDB(disp, valor);
+    }
+    
+    private void actualizarDB(Dispositivo disp, int valor) {
+        disp.setValor(valor);
+        edit(disp);
     }
     
 }
