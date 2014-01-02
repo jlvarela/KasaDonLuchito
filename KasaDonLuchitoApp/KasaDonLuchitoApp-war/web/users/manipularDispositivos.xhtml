@@ -21,6 +21,7 @@
             
             <ui:define name="centro">
                 <h:form>
+                    
                     <p:outputLabel value="Cantidad de dispositivos administrados: #{mantenedorDispositivosVerListadoMB.lista.size()}"/>
                     <p:panelGrid columns="5" styleClass="centrar" >
                         <f:facet name="header">Listado de dispositivos</f:facet>
@@ -43,7 +44,7 @@
 
                                     </p:ajax>
                                 </p:slider>
-                                <p:poll interval="3" listener="#{mantenedorDispositivosVerListadoMB.verificarValor(disp.id)}" update="outputValor" rendered="#{disp.sensor}"/>
+                                <p:poll interval="#{mantenedorDispositivosVerListadoMB.getIntervaloActualizacion()}" listener="#{mantenedorDispositivosVerListadoMB.verificarValor(disp.id)}" update="outputValor" rendered="#{disp.sensor}"/>
                             </p:column>
                             <p:column headerText="" rendered="#{request.isUserInRole('Administrador')}">
                                 <p:commandLink value="  " styleClass=" ui-btn ui-icon-shadow ui-icon-pencil ui-icon" action="#{mantenedorDispositivosVerListadoMB.editar(disp.id)}">

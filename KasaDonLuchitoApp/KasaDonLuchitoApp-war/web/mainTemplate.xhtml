@@ -14,12 +14,12 @@
             <meta content='text/html; charset=UTF-8' http-equiv="Content-Type"/>
             <h:outputStylesheet library="css" name="css/bootstrap.css" />
             <h:outputStylesheet library="css" name="css/personalizados.css" />
-            <link rel="icon" href="#{request.contextPath}/resources/img/icon.png"/>
-            <title><ui:insert name="titulo">Mi KaaZa</ui:insert></title>
+            <link rel="icon" href="#{request.contextPath}/resources/img/#{configuracionesMB.getIcon()}"/>
+            <title><ui:insert name="titulo"></ui:insert></title>
         </f:facet>
     </h:head>
 
-    <body data-tarjet=".bs-docs-sidebar" data-spy="scroll" data-twttr-rendered="true" style="background:url('#{request.contextPath}/resources/img/Fondo2.jpg')">
+    <body data-tarjet=".bs-docs-sidebar" data-spy="scroll" data-twttr-rendered="true" style="background-size: cover; background:url('#{request.contextPath}/resources/img/#{configuracionesMB.getFondoPantalla()}')">
         
         <p:overlayPanel id="menu" for=":form_botones_barra:btnPanelContext" rendered="#{request.isUserInRole('Administrador') 
                                                              || request.isUserInRole('Usuario')}">
@@ -72,7 +72,7 @@
                         <div class="span2 text-right">
                             <h:graphicImage alt="Logo Mi KaaZa" 
                                             width="200px" height="115px"
-                                            url="/resources/img/icon2.jpg"/>
+                                            url="/resources/img/#{configuracionesMB.getLogo()}"/>
                         </div>
                     </div>
                 </div>

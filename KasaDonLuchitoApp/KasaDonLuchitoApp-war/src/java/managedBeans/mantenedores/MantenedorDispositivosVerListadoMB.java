@@ -18,6 +18,7 @@ import javax.enterprise.context.RequestScoped;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import javax.inject.Inject;
+import managedBeans.ConfiguracionesMB;
 import org.primefaces.event.SlideEndEvent;
 import otros.CommonFunctions;
 import pojos.DispositivoPojo;
@@ -36,6 +37,9 @@ public class MantenedorDispositivosVerListadoMB {
     
     @Inject
     private MantenedorGenericoConversation mantDispositivoConv;
+    
+    @Inject
+    private ConfiguracionesMB configMB;
     
     private List<DispositivoPojo> lista;
     private List<DispositivoPojo> listaBusqueda;
@@ -107,7 +111,23 @@ public class MantenedorDispositivosVerListadoMB {
     }
     
     public void verificarValor(Integer id) {
-        
+        //Extrañamente funciona aunque haga nada, creo que es porque inicia el init
+    }
+    
+    public int getIntervaloActualizacion() {
+        int resInt = 3;
+        String res = configMB.getConfiguracion("tiempo_actualizacion_sensores");
+        if (res == null) 
+            return resInt;
+        else {
+            try {
+                resInt = Integer.parseInt(res);
+            }
+            catch (NumberFormatException nfe) {
+                Logger.getLogger(getClass().getName()).log(Level.WARNING, "Error de parseo de la config \"tiempo_actualizacion_sensores\", usando valor por default");
+            }
+            return resInt;
+        }
     }
     
     public void cambioDispositivo(SlideEndEvent e) {

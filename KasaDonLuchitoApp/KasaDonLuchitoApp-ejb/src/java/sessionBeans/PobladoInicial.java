@@ -5,6 +5,7 @@
 package sessionBeans;
 
 import entities.Arduino;
+import entities.Configuracion;
 import entities.Dispositivo;
 import entities.TipoDispositivo;
 import entities.TipoUsuario;
@@ -77,6 +78,10 @@ public class PobladoInicial implements PobladoInicialLocal {
         persist(arduino);
         persist(d1);
         persist(d2);
+        
+        //Tirando configuraciones básicas
+        Configuracion config = new Configuracion("fondo_app", "fondo3.jpg");
+        persist(config);
         
         Logger.getLogger(getClass().getName()).log(Level.INFO, "Realizado poblado inicial");
     }

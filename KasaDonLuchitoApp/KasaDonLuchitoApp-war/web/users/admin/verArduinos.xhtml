@@ -56,6 +56,7 @@
 
                         <f:facet name="footer">
                             <p:button value="Ver dispositivos" href="/faces/users/manipularDispositivos.xhtml" rendered="#{request.isUserInRole('Administrador')}"/>
+                            <p:button value="Agregar dispositivo" href="/faces/users/admin/agregarDispositivo.xhtml" rendered="#{request.isUserInRole('Administrador')}"/>
                             <p:button value="Agregar arduino" href="/faces/users/admin/agregarArduino.xhtml" rendered="#{request.isUserInRole('Administrador')}"/>
                          </f:facet>
                     </p:panelGrid>
