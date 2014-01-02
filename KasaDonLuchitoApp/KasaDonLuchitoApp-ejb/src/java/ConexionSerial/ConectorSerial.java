@@ -199,7 +199,7 @@ public class ConectorSerial implements SerialPortEventListener {
                         llegoMensaje();
                         rebootVarsMsg();
                         try {
-                            Thread.sleep(1);
+                            Thread.sleep(5);
                         } catch (InterruptedException ex) {
                             Logger.getLogger(ConectorSerial.class.getName()).log(Level.SEVERE, null, ex);
                         }

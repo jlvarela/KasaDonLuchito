@@ -43,7 +43,7 @@
 
                                     </p:ajax>
                                 </p:slider>
-                                <!--<p:poll interval="3" listener="#{mantenedorDispositivosVerListadoMB.verificarValor(disp.id)}" update="outputValor" rendered="#{disp.sensor}"  stop="#{disp.actuador}"/> -->
+                                <p:poll interval="3" listener="#{mantenedorDispositivosVerListadoMB.verificarValor(disp.id)}" update="outputValor" rendered="#{disp.sensor}"/>
                             </p:column>
                             <p:column headerText="" rendered="#{request.isUserInRole('Administrador')}">
                                 <p:commandLink value="  " styleClass=" ui-btn ui-icon-shadow ui-icon-pencil ui-icon" action="#{mantenedorDispositivosVerListadoMB.editar(disp.id)}">
