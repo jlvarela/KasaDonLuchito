@@ -159,15 +159,7 @@ public class ConectorSerial implements SerialPortEventListener {
     public void serialEvent(SerialPortEvent evt) {
         byte inByte = 0;
         currentMillis = Calendar.getInstance().getTimeInMillis();
-        if (msgComplete) {
-            llegoMensaje();
-            rebootVarsMsg();
-            try {
-                Thread.sleep(1);
-            } catch (InterruptedException ex) {
-                Logger.getLogger(ConectorSerial.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        }
+        
 
 
         if (evt.getEventType() == SerialPortEvent.DATA_AVAILABLE) {
@@ -204,6 +196,14 @@ public class ConectorSerial implements SerialPortEventListener {
                         bodyMsg[indexMsg] = 0; //Caracter terminador de string
                         bodyReceived = true;
                         msgComplete = true;
+                        llegoMensaje();
+                        rebootVarsMsg();
+                        try {
+                            Thread.sleep(1);
+                        } catch (InterruptedException ex) {
+                            Logger.getLogger(ConectorSerial.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                            
                     }
                 }
             }
