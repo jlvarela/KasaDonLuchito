@@ -30,5 +30,9 @@ public interface DispositivoFacadeLocal {
     int count();
 
     public void accion(Integer id, int valor);
+
+    public void agregarDispositivo(String nombre, Integer idInterno, Integer id_tipo_dispositivo, Integer id_arduino, List<Integer> lista_pines, List<Integer> lista_configs) throws Exception;
+
+    public Dispositivo findByIdInterno(Integer idInterno);
     
 }

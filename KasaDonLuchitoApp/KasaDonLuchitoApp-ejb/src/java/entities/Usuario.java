@@ -7,6 +7,7 @@ package entities;
 import java.io.Serializable;
 import java.util.LinkedList;
 import java.util.List;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -38,7 +39,7 @@ public class Usuario implements Serializable {
     @JoinColumn(nullable = false)
     private TipoUsuario tipoUsuario;
     
-    @OneToMany(mappedBy = "usuario")
+    @OneToMany(mappedBy = "usuario", cascade = CascadeType.REMOVE)
     private List<PermisoDispositivo> permisoDispositivos;
     
     @ManyToMany(mappedBy = "usuariosPermitidos")

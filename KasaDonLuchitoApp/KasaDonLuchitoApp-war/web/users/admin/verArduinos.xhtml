@@ -1,0 +1,68 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      contentType="text/html">
+
+    <body>
+
+        <ui:composition template="/mainTemplate.xhtml">
+
+            <ui:define name="titulo">
+                Ver placas Arduino
+            </ui:define>
+            
+            <!--<ui:define name="botonesBarra">
+                
+            </ui:define> -->
+            
+            <ui:define name="centro">
+                <h:form>
+                    <p:outputLabel value="Cantidad de placas administradas: #{mantenedorArduinoVerListadoMB.lista.size()}"/>
+                    <p:panelGrid columns="5" styleClass="centrar" >
+                        <f:facet name="header">Listado de Arduino</f:facet>
+                        
+                        <p:dataTable value="#{mantenedorArduinoVerListadoMB.lista}" var="ardu" 
+                                     emptyMessage="No hay arduinos registrados en el sistema" 
+                                     filteredValue="#{mantenedorArduinoVerListadoMB.listaBusqueda}">
+                            <p:column headerText="N°" sortBy="#{ardu.id}" >
+                                <h:outputText value="#{ardu.id}"/>
+                            </p:column>
+                            <p:column headerText="Nombre" sortBy="#{ardu.nombre}" filterMatchMode="contains" filterBy="#{ardu.nombre}">
+                                <h:outputText value="#{ardu.nombre}"/>
+                            </p:column>
+                            <p:column headerText="Cantidad dispositivos">
+                                <h:outputText value="#{ardu.cantidadDispositivos}"/>
+                            </p:column>
+                            <p:column headerText="" rendered="#{request.isUserInRole('Administrador')}">
+                                <p:commandLink value="  " styleClass=" ui-btn ui-icon-shadow ui-icon-pencil ui-icon" action="#{mantenedorArduinoVerListadoMB.editar(ardu.id)}">
+                                </p:commandLink>
+                            </p:column>
+                            <p:column headerText="" rendered="#{request.isUserInRole('Administrador')}">
+                                <p:commandLink value="  " styleClass=" ui-btn ui-icon-shadow ui-icon-trash ui-icon" onclick="cd_#{ardu.id}.show();" />
+
+                                <p:confirmDialog message="¿Está seguro que desea eliminar el dispositivo? ya no podrá ser utilizado"
+                                                 header="Confirmación de eliminación de dispositivo" severity="alert"
+                                                 widgetVar="cd_#{ardu.id}" closeOnEscape="true">
+                                    <p:commandButton value="Si" actionListener="#{mantenedorArduinoVerListadoMB.eliminar(ardu.id)}"
+                                                     oncomplete="cd_#{ardu.id}.hide();"/>
+                                    <p:commandButton value="No" onclick="cd_#{ardu.id}.hide();" type="button" />
+                                </p:confirmDialog>
+                            </p:column>
+                        </p:dataTable>
+
+                        <f:facet name="footer">
+                            <p:button value="Ver dispositivos" href="/faces/users/manipularDispositivos.xhtml" rendered="#{request.isUserInRole('Administrador')}"/>
+                            <p:button value="Agregar arduino" href="/faces/users/admin/agregarArduino.xhtml" rendered="#{request.isUserInRole('Administrador')}"/>
+                         </f:facet>
+                    </p:panelGrid>
+                </h:form>
+            </ui:define>
+
+        </ui:composition>
+
+    </body>
+</html>

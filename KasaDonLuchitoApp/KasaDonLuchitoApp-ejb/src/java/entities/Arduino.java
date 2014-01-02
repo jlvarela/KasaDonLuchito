@@ -7,11 +7,14 @@ package entities;
 import java.io.Serializable;
 import java.util.LinkedList;
 import java.util.List;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 
 /**
@@ -19,6 +22,9 @@ import javax.persistence.OneToMany;
  * @author victor
  */
 @Entity
+@NamedQueries( {
+    @NamedQuery(name="Arduino.portInUse", query="SELECT u.puertoCOM FROM Arduino u WHERE u.puertoCOM = :port"),
+})
 public class Arduino implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
@@ -31,7 +37,7 @@ public class Arduino implements Serializable {
     @Column(nullable = false, unique = true)
     private String nombre;
     
-    @OneToMany(mappedBy = "arduino")
+    @OneToMany(mappedBy = "arduino", cascade = CascadeType.REMOVE)
     private List<Dispositivo> dispositivos;
 
     public Arduino() {

@@ -4,7 +4,10 @@
  */
 package sessionBeans;
 
+import entities.Arduino;
 import entities.Dispositivo;
+import entities.TipoDispositivo;
+import java.util.List;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -20,6 +23,10 @@ import sessionBeans.SerialInterface.ConectionArduinoLocal;
 @Stateless
 public class DispositivoFacade extends AbstractFacade<Dispositivo> implements DispositivoFacadeLocal {
     @EJB
+    private TipoDispositivoFacadeLocal tipoDispositivoFacade;
+    @EJB
+    private ArduinoFacadeLocal arduinoFacade;
+    @EJB
     private ConectionArduinoLocal conectionArduino;
     
     @PersistenceContext(unitName = "KasaDonLuchitoApp-ejbPU")
@@ -32,6 +39,26 @@ public class DispositivoFacade extends AbstractFacade<Dispositivo> implements Di
 
     public DispositivoFacade() {
         super(Dispositivo.class);
+    }
+    
+    @Override
+    public void agregarDispositivo(String nombre, Integer idInterno, 
+            Integer id_tipo_dispositivo, Integer id_arduino, 
+            List<Integer> lista_pines, List<Integer> lista_configs) throws Exception {
+        Arduino a = arduinoFacade.find(id_arduino);
+        TipoDispositivo td = tipoDispositivoFacade.find(id_tipo_dispositivo);
+        Dispositivo d = new Dispositivo();
+        d.setNombre(nombre);
+        d.setIdInterno(idInterno);
+        d.setArduino(a);
+        a.getDispositivos().add(d);
+        d.setTipo(td);
+        d.setConfiguraciones(lista_configs);
+        d.setPines(lista_pines);
+        d.setValor(0);
+        
+        create(d);
+        conectionArduino.consultar(d);
     }
     
     @Override
@@ -56,4 +83,19 @@ public class DispositivoFacade extends AbstractFacade<Dispositivo> implements Di
         edit(disp);
     }
     
+    @Override
+    public Dispositivo findByIdInterno(Integer idInterno) {
+        Dispositivo disp;
+        if (idInterno == null)
+            return null;
+        Query q = this.em.createNamedQuery("Dispositivo.findByIdInterno");
+        q.setParameter("idInterno", idInterno);
+        try {
+            disp = (Dispositivo)q.getSingleResult();
+        }
+        catch (NoResultException nre) {
+            return null;
+        }
+        return disp;
+    }
 }

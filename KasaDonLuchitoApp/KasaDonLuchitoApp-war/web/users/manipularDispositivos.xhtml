@@ -21,13 +21,13 @@
             
             <ui:define name="centro">
                 <h:form>
-                    <p:outputLabel value="Cantidad de dispositivos administrados: #{mantenedorDispositivosVerListado.lista.size()}"/>
+                    <p:outputLabel value="Cantidad de dispositivos administrados: #{mantenedorDispositivosVerListadoMB.lista.size()}"/>
                     <p:panelGrid columns="5" styleClass="centrar" >
                         <f:facet name="header">Listado de dispositivos</f:facet>
                         
-                        <p:dataTable value="#{mantenedorDispositivosVerListado.lista}" var="disp" 
+                        <p:dataTable value="#{mantenedorDispositivosVerListadoMB.lista}" var="disp" 
                                      emptyMessage="No hay dispositivos registrados en el sistema" 
-                                     filteredValue="#{mantenedorDispositivosVerListado.listaBusqueda}">
+                                     filteredValue="#{mantenedorDispositivosVerListadoMB.listaBusqueda}">
                             <p:column headerText="N°" sortBy="#{disp.idInterno}" >
                                 <h:outputText value="#{disp.idInterno}"/>
                             </p:column>
@@ -35,18 +35,18 @@
                                 <h:outputText value="#{disp.nombre}"/>
                             </p:column>
                             <p:column headerText="Valor" width="100px;">
-                                <h:inputHidden id="inputValor" value="#{disp.valor}"/>
-                                    <h:outputText id="outputValor" value="#{disp.valor}"/>
-                                    
-                                    <p:slider display="outputValor" for="inputValor" minValue="#{disp.minimoValorPosible}" maxValue="#{disp.maximoValorPosible}" disabled="#{disp.sensor}">
-                                        <f:param name="id" value="#{disp.id}" />
-                                        <p:ajax event="slideEnd" listener="#{mantenedorDispositivosVerListado.cambioDispositivo}">
-                                            
-                                        </p:ajax>
-                                    </p:slider>
+                                <h:inputHidden id="inputValor" value="#{disp.valor}" rendered="#{disp.actuador}"/>
+                                <h:outputText id="outputValor" value="#{disp.valor}"/>
+                                <p:slider display="outputValor" for="inputValor" minValue="#{disp.minimoValorPosible}" maxValue="#{disp.maximoValorPosible}" rendered="#{disp.actuador}">
+                                    <f:param name="id" value="#{disp.id}" />
+                                    <p:ajax event="slideEnd" listener="#{mantenedorDispositivosVerListadoMB.cambioDispositivo}">
+
+                                    </p:ajax>
+                                </p:slider>
+                                    <p:poll interval="3" listener="#{mantenedorDispositivosVerListadoMB.verificarValor(disp.id)}" update="outputValor" />
                             </p:column>
                             <p:column headerText="" rendered="#{request.isUserInRole('Administrador')}">
-                                <p:commandLink value="  " styleClass=" ui-btn ui-icon-shadow ui-icon-pencil ui-icon" action="#{mantenedorDispositivosVerListado.editar(disp.id)}">
+                                <p:commandLink value="  " styleClass=" ui-btn ui-icon-shadow ui-icon-pencil ui-icon" action="#{mantenedorDispositivosVerListadoMB.editar(disp.id)}">
                                 </p:commandLink>
                             </p:column>
                             <p:column headerText="" rendered="#{request.isUserInRole('Administrador')}">
@@ -55,7 +55,7 @@
                                 <p:confirmDialog message="¿Está seguro que desea eliminar el dispositivo? ya no podrá ser utilizado"
                                                  header="Confirmación de eliminación de dispositivo" severity="alert"
                                                  widgetVar="cd_#{disp.id}" closeOnEscape="true">
-                                    <p:commandButton value="Si" actionListener="#{mantenedorDispositivosVerListado.eliminar(disp.id)}"
+                                    <p:commandButton value="Si" actionListener="#{mantenedorDispositivosVerListadoMB.eliminar(disp.id)}"
                                                      oncomplete="cd_#{disp.id}.hide();"/>
                                     <p:commandButton value="No" onclick="cd_#{disp.id}.hide();" type="button" />
                                 </p:confirmDialog>
@@ -64,7 +64,7 @@
 
                         <f:facet name="footer">
                             <p:button value="Agregar dispositivo" href="/faces/users/admin/agregarDispositivo.xhtml" rendered="#{request.isUserInRole('Administrador')}"/>
-                            <p:button value="Agregar arduino" href="/faces/admin/agregarArduino.xhtml" rendered="#{request.isUserInRole('Administrador')}"/>
+                            <p:button value="Agregar arduino" href="/faces/users/admin/agregarArduino.xhtml" rendered="#{request.isUserInRole('Administrador')}"/>
                          </f:facet>
                     </p:panelGrid>
                 </h:form>

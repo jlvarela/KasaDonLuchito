@@ -1,12 +1,70 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:h="http://java.sun.com/jsf/html">
-    <h:head>
-        <title>Facelet Title</title>
-    </h:head>
-    <h:body>
-        Hello from Facelets
-    </h:body>
-</html>
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      contentType="text/html">
 
+    <body>
+
+        <ui:composition template="/mainTemplate.xhtml">
+
+            <ui:define name="titulo">
+                Agregar placa Arduino
+            </ui:define>
+            
+            <!--<ui:define name="botonesBarra">
+                
+            </ui:define> -->
+            
+            <ui:define name="centro">
+                <h:form>
+                    <p:panelGrid columns="2" styleClass="centrar" >
+                        <f:facet name="header">Agregar Arduino</f:facet>
+                        
+                        <p:outputLabel value="Nombre del dispositivo" for="nombre"/>
+                        <p:inputText id="nombre" value="#{mantenedorDispositivoAgregarMB.nombre}" required="true">
+                        
+                        </p:inputText>
+                        
+                        <p:outputLabel value="Identificador interno" for="idInterno"/>
+                        <p:inputText id="idInterno" value="#{mantenedorDispositivoAgregarMB.idInterno}" required="true">
+                        
+                        </p:inputText>
+                        
+                        <p:outputLabel value="Seleccione tipo de dispositivo"/>
+                        <p:selectOneMenu label="Seleccione tipo de dispositivo" value="#{mantenedorDispositivoAgregarMB.id_tipo_dispositivo}">
+                            <f:selectItems value="#{mantenedorDispositivoAgregarMB.tipos_dispositivos}"  
+                                           var="tipo" itemLabel="#{tipo.label}" itemValue="#{tipo.id}" />
+                        </p:selectOneMenu>
+                        
+                        <p:outputLabel value="Pines usados" for="pines"/>
+                        <p:inputText id="pines" value="#{mantenedorDispositivoAgregarMB.pines}" required="true">
+                        
+                        </p:inputText>
+                        
+                        <p:outputLabel value="Configuraciones" for="configs"/>
+                        <p:inputText id="configs" value="#{mantenedorDispositivoAgregarMB.configs}">
+                        
+                        </p:inputText>
+                        
+                        <p:outputLabel value="Seleccione Arduino"/>
+                        <p:selectOneMenu label="Seleccione Arduino" value="#{mantenedorDispositivoAgregarMB.id_arduino}" required="true">
+                            <f:selectItems value="#{mantenedorDispositivoAgregarMB.arduinos}"  
+                                           var="ardu" itemLabel="#{ardu.label}" itemValue="#{ardu.id}" />
+                        </p:selectOneMenu>
+
+                        <f:facet name="footer">
+                            <p:commandButton value="Aceptar" ajax="false" action="#{mantenedorDispositivoAgregarMB.agregarDispositivo()}"/>
+                            <p:commandButton value="Volver" immediate="true" action="#{mantenedorDispositivoAgregarMB.volverToLista()}"/>
+                        </f:facet>
+                    </p:panelGrid>
+                </h:form>
+            </ui:define>
+
+        </ui:composition>
+
+    </body>
+</html>

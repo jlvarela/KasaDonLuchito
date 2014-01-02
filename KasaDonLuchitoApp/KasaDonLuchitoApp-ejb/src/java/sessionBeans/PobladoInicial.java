@@ -134,7 +134,7 @@ public class PobladoInicial implements PobladoInicialLocal {
         td.setNombre("Sensor proximidad ultrasonido HR-S04");
         td.setSensor(true);
         td.getValoresPosibles().add(0);
-        td.getValoresPosibles().add(300);
+        td.getValoresPosibles().add(255);
         td.setRangoValores(true);
         tiposDeDispositivos.add(td);
         persist(td);

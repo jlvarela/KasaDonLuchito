@@ -4,6 +4,7 @@
  */
 package ConexionSerial;
 
+import entities.Dispositivo;
 import gnu.io.*;
 import java.io.IOException;
 import java.io.InputStream;
@@ -16,12 +17,17 @@ import java.util.List;
 import java.util.TooManyListenersException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.naming.Context;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
+import sessionBeans.DispositivoFacadeLocal;
 
 /**
  *
  * @author victor
  */
 public class ConectorSerial implements SerialPortEventListener {
+    DispositivoFacadeLocal dispositivoFacade = lookupDispositivoFacadeLocal();
     private Integer idArduino;
     private Enumeration ports = null;
     //map the port names to CommPortIdentifiers
@@ -44,14 +50,14 @@ public class ConectorSerial implements SerialPortEventListener {
     final static int TIMEOUT = 2000;
     
     //Tipos de mensajes enviados al arduino
-    final static char TIPO_MSG_DEBUG = '0';
-    final static char TIPO_MSG_MAPEO_PINES = '1';
-    final static char TIPO_MSG_CONSULTA_DATOS = '2';
-    final static char TIPO_MSG_ACCION_DISPOSITIVO = '3';
+    public final static char TIPO_MSG_DEBUG = '0';
+    public final static char TIPO_MSG_MAPEO_PINES = '1';
+    public final static char TIPO_MSG_CONSULTA_DATOS = '2';
+    public final static char TIPO_MSG_ACCION_DISPOSITIVO = '3';
     //Tipos de mensajes recibidos desde el arduino
-    final static char TIPO_MSG_CONFIG_REALIZADA = '4';
-    final static char TIPO_MSG_ACCION_REALIZADA = '5';
-    final static char TIPO_MSG_DATOS_SENSOR = '6';
+    public final static char TIPO_MSG_CONFIG_REALIZADA = '4';
+    public final static char TIPO_MSG_ACCION_REALIZADA = '5';
+    public final static char TIPO_MSG_DATOS_SENSOR = '6';
     
     final static int TAM_HEADER = 2;
     final static int MAX_BODY = 126;
@@ -69,6 +75,8 @@ public class ConectorSerial implements SerialPortEventListener {
     int tam_body_defined_in_header;
     long previousMillis = 0;
     long currentMillis = 0;
+    
+    List<Dispositivo> dispositivosManejados;
     
     public void initListener()
     {
@@ -220,73 +228,6 @@ public class ConectorSerial implements SerialPortEventListener {
                 rebootVarsMsg();
             }
         }
-        
-        /*
-        if (evt.getEventType() == SerialPortEvent.DATA_AVAILABLE)
-        {
-            try {
-                Thread.sleep(10);
-            } catch (InterruptedException ex) {
-                System.out.println("Error al esperar");
-            }
-            try
-            {
-                int cuantos;
-                char tipoMsg;
-                if (input.available() > 0) {
-                    tipoMsg = (char)input.read();
-                    if (tipoMsg == '0') {
-                        System.out.print("Llegó mensaje de debug: ");
-                    }
-                    if (tipoMsg == '4') {
-                        System.out.print("Llegó mensaje de confirmación de configuración: ");
-                    }
-                    if (tipoMsg == '5') {
-                        System.out.print("Llegó mensaje de confirmación de acción: ");
-                    }
-                    if (tipoMsg == '6') {
-                        System.out.print("Llegó mensaje de infoDispositivo: ");
-                    }
-                    cuantos = (int)input.read();
-                    byte[] datosSalida = new byte[cuantos];
-                    
-                    int leidos = input.read(datosSalida, 0, cuantos);
-                    while (leidos < cuantos) {
-                        Thread.sleep(10);
-                        datosSalida[leidos++] = (byte)input.read();
-                    }
-                    if (tipoMsg == '0') {
-                        StringBuilder strBuild = new StringBuilder();
-                        for (int i = 0; i < datosSalida.length; i++) {
-                            strBuild.append((char)datosSalida[i]);
-                        }
-                        System.out.println(strBuild.toString());
-                    }
-                    else if (tipoMsg == '4'){
-                        System.out.print("Confirmación config ID:"+(int)datosSalida[0]);
-                    }
-                    else if (tipoMsg == '5'){
-                        System.out.print("Confirmación acción ID:"+(int)datosSalida[0]);
-                    }
-                    else if (tipoMsg == '6'){
-                        System.out.print("ID:"+(int)datosSalida[0]+" valor:"+(int)datosSalida[1]);
-                    }
-                    else {
-                        System.out.print("Tipo de mensaje desconocido: ");
-                        for (int i = 0; i < datosSalida.length; i++) {
-                            System.out.print((char)datosSalida[i]);
-                        }
-                    }
-                    
-                    System.out.println();
-                }
-            }
-            catch (Exception e)
-            {
-                System.out.println("Error: "+e.getMessage());
-            }
-        }
-        */
     }
     
     
@@ -302,7 +243,7 @@ public class ConectorSerial implements SerialPortEventListener {
             //get only serial ports
             if (curPort.getPortType() == CommPortIdentifier.PORT_SERIAL)
             {
-                System.out.println("Agregando port: "+curPort.getName());
+                //System.out.println("Agregando port: "+curPort.getName());
                 portMap.put(curPort.getName(), curPort);
                 listaPuertos.add(curPort.getName());
             }
@@ -327,6 +268,7 @@ public class ConectorSerial implements SerialPortEventListener {
     }
 
     public ConectorSerial() {
+        dispositivosManejados = new LinkedList<Dispositivo>();
     }
     
     public void close() throws Exception{
@@ -380,6 +322,10 @@ public class ConectorSerial implements SerialPortEventListener {
         else if (headerMsg[0] == TIPO_MSG_DATOS_SENSOR) {
             int idSensor = (int)bodyMsg[0];
             int valorRecibido = (int)bodyMsg[1];
+            //LO CORRECTO ES ENVIARLO A UNA COLA O MESSAGE DRIVEN BEAN
+            Dispositivo d = dispositivoFacade.findByIdInterno(idSensor);
+            d.setValor(valorRecibido);
+            dispositivoFacade.edit(d);
             System.out.println("Ha llegado un mensaje de datos del dispositivo con id: "+idSensor + " con valor: "+valorRecibido);
         }
         else {
@@ -391,5 +337,19 @@ public class ConectorSerial implements SerialPortEventListener {
             System.out.println("Se ha intentado interpretar como: "+strBuild.toString());
         }
         
+    }
+
+    public List<Dispositivo> getDispositivosManejados() {
+        return dispositivosManejados;
+    }
+
+    private DispositivoFacadeLocal lookupDispositivoFacadeLocal() {
+        try {
+            Context c = new InitialContext();
+            return (DispositivoFacadeLocal) c.lookup("java:global/KasaDonLuchitoApp/KasaDonLuchitoApp-ejb/DispositivoFacade!sessionBeans.DispositivoFacadeLocal");
+        } catch (NamingException ne) {
+            Logger.getLogger(getClass().getName()).log(Level.SEVERE, "exception caught", ne);
+            throw new RuntimeException(ne);
+        }
     }
 }

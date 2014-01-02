@@ -28,5 +28,9 @@ public interface ArduinoFacadeLocal {
     List<Arduino> findRange(int[] range);
 
     int count();
+
+    public List<String> getPuertosDisponibles();
+
+    public void agregarArduino(String nombre, String port) throws Exception;
     
 }

@@ -16,6 +16,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.Transient;
 
 /**
  *
@@ -24,6 +25,7 @@ import javax.persistence.NamedQuery;
 @Entity
 @NamedQueries( {
     @NamedQuery(name="Dispositivo.findById", query="SELECT u FROM Dispositivo u WHERE u.id = :id"),
+    @NamedQuery(name="Dispositivo.findByIdInterno", query="SELECT u FROM Dispositivo u WHERE u.idInterno = :idInterno")
 })
 public class Dispositivo implements Serializable {
     private static final long serialVersionUID = 1L;
@@ -47,6 +49,9 @@ public class Dispositivo implements Serializable {
     
     private int valor;
     
+    @Transient
+    private boolean configurado;
+    
     private List<Integer> pines;
     
     private List<Integer> configuraciones;
@@ -54,6 +59,7 @@ public class Dispositivo implements Serializable {
     public Dispositivo() {
         pines = new LinkedList<Integer>();
         configuraciones = new LinkedList<Integer>();
+        configurado = false;
     }
 
     public Integer getId() {
@@ -166,6 +172,14 @@ public class Dispositivo implements Serializable {
     @Override
     public String toString() {
         return "entities.Dispositivo[ id=" + id + " ]";
+    }
+
+    public boolean isConfigurado() {
+        return configurado;
+    }
+
+    public void setConfigurado(boolean configurado) {
+        this.configurado = configurado;
     }
     
 }

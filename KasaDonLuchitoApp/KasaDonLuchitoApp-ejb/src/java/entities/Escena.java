@@ -6,6 +6,7 @@ package entities;
 
 import java.io.Serializable;
 import java.util.List;
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -27,7 +28,7 @@ public class Escena implements Serializable {
     private String nombre;
     
     
-    @OneToMany(mappedBy = "escena")
+    @OneToMany(mappedBy = "escena", cascade = CascadeType.REMOVE)
     private List<AccionEscena> accionesEscena;
     
     @ManyToMany

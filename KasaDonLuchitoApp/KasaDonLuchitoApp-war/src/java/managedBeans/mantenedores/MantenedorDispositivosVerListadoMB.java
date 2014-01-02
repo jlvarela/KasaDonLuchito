@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package managedBeans.dispositivos;
+package managedBeans.mantenedores;
 
 import entities.Dispositivo;
 import java.util.LinkedList;
@@ -15,8 +15,11 @@ import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.inject.Named;
 import javax.enterprise.context.RequestScoped;
+import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
+import javax.inject.Inject;
 import org.primefaces.event.SlideEndEvent;
+import otros.CommonFunctions;
 import pojos.DispositivoPojo;
 import sessionBeans.DispositivoFacadeLocal;
 
@@ -25,11 +28,14 @@ import sessionBeans.DispositivoFacadeLocal;
  * @author victor
  */
 @ManagedBean
-@Named(value = "mantenedorDispositivosVerListado")
+@Named(value = "mantenedorDispositivosVerListadoMB")
 @RequestScoped
-public class mantenedorDispositivosVerListado {
+public class MantenedorDispositivosVerListadoMB {
     @EJB
     private DispositivoFacadeLocal dispositivoFacade;
+    
+    @Inject
+    private MantenedorGenericoConversation mantDispositivoConv;
     
     private List<DispositivoPojo> lista;
     private List<DispositivoPojo> listaBusqueda;
@@ -55,10 +61,53 @@ public class mantenedorDispositivosVerListado {
         }
     }
     
+    public void editar(Integer num) {
+        Dispositivo toEdit = dispositivoFacade.find(num);
+        if (toEdit != null) {
+            this.mantDispositivoConv.beginConversation();
+            this.mantDispositivoConv.setState(MantenedorGenericoConversation.EDITAR);
+            this.mantDispositivoConv.setIdToEdit(num);
+            CommonFunctions.goToPage("/faces/users/admin/editarArduino.xhtml?cid=".concat(this.mantDispositivoConv.getConversation().getId()));
+        }
+        else {
+            //MOSTRAR ERROR
+            this.mantDispositivoConv.limpiarDatos();
+            CommonFunctions.goToIndex();
+        }
+    }
+    
+    public void eliminar(Integer num) {
+        try {
+            Dispositivo toEdit = dispositivoFacade.find(num);
+            if (toEdit != null) {
+                dispositivoFacade.remove(toEdit);
+                CommonFunctions.viewMessage(FacesMessage.SEVERITY_INFO,
+                        "Se ha eliminado el Arduino",
+                        "Se ha eliminado correctamente el Arduino");
+            }
+            else {
+                //MOSTRAR ERROR
+                this.mantDispositivoConv.limpiarDatos();
+                CommonFunctions.goToIndex();
+            }
+        }
+        catch (Exception e) {
+            CommonFunctions.viewMessage(FacesMessage.SEVERITY_ERROR,
+                    e.getMessage(),
+                    e.getMessage());
+        }
+        this.mantDispositivoConv.limpiarDatos();
+        CommonFunctions.goToIndex();
+    }
+    
     /**
-     * Creates a new instance of mantenedorDispositivosVerListado
+     * Creates a new instance of MantenedorDispositivosVerListadoMB
      */
-    public mantenedorDispositivosVerListado() {
+    public MantenedorDispositivosVerListadoMB() {
+    }
+    
+    public void verificarValor(Integer id) {
+        
     }
     
     public void cambioDispositivo(SlideEndEvent e) {
