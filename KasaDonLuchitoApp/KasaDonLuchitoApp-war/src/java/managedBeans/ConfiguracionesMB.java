@@ -50,6 +50,14 @@ public class ConfiguracionesMB {
         return res;
     }
 
+    public String getTitulo() {
+        String res = configuracionFacade.findByName("titulo_app");
+        if (res == null) {
+            res = "Mi Kaaza";
+        }
+        return res;
+    }
+    
     /**
      * Creates a new instance of ConfiguracionesMB
      */
