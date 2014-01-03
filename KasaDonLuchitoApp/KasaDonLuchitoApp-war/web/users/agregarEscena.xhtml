@@ -1,0 +1,50 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      contentType="text/html">
+
+    <body>
+
+        <ui:composition template="/mainTemplate.xhtml">
+
+            <ui:define name="titulo">
+                Bienvenido a Mi Kaaza
+            </ui:define>
+            
+            <!--<ui:define name="botonesBarra">
+                
+            </ui:define> -->
+            
+            <ui:define name="centro">
+                <h:form id="form_login" >
+                    <p:panelGrid columns="2" styleClass="centrar">
+                    <f:facet name="header">Agregar escena</f:facet>
+
+                        <p:outputLabel value="Nombre de la escena" for="nombre"/>
+                        <p:inputText id="nombre" value="#{mantenedorEscenaAgregarMB.nombre}" required="true">
+                        </p:inputText>
+                        
+                        <p:outputLabel value="Usuarios permitidos" for="usuarios"/>
+                        <p:pickList id="usuariosPickList" value="#{mantenedorEscenaAgregarMB.usuarios}" 
+                                    var="usuario" itemLabel="#{usuario.username}" itemValue="#{usuario}" />
+                        
+                        <p:outputLabel value="Dispositovos actuados" for="disp"/>
+                        <p:pickList id="dispositivosPickList" value="#{mantenedorEscenaAgregarMB.dispositivos}" 
+                                    var="disp" itemLabel="#{disp.nombre}" itemValue="#{disp}" />
+                        
+                        <f:facet name="footer">
+                            <p:commandButton value="Aceptar" ajax="false" action="#{mantenedorEscenaAgregarMB.agregarEscena()}"/>
+                            <p:commandButton value="Volver" immediate="true" action="#{mantenedorEscenaAgregarMB.volverToLista()}"/>
+                        </f:facet>
+                    </p:panelGrid>
+                </h:form>
+            </ui:define>
+
+        </ui:composition>
+
+    </body>
+</html>

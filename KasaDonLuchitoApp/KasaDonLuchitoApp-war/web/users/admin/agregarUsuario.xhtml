@@ -20,11 +20,32 @@
             </ui:define> -->
             
             <ui:define name="centro">
-                <h:form id="form_login" >
+                <h:form>
                     <p:panelGrid columns="2" styleClass="centrar">
-                    <f:facet name="header">Agregar usuario</f:facet>
-
+                        <f:facet name="header">Agregar usuario</f:facet>
                         
+                        <p:outputLabel value="Nombre de usuario" for="nombre"/>
+                        <p:inputText id="nombre" value="#{mantenedorUsuarioAgregarMB.nombre}" required="true">
+                        </p:inputText>
+                        
+                        <p:outputLabel value="Rol de usuario" for="selectorRol"/>
+                        <p:selectOneMenu id="selectorRol" value="#{mantenedorUsuarioAgregarMB.nombreRol}" >
+                            <f:selectItems itemLabel="#{rol.label}" itemValue="#{rol.id}" var="rol" value="#{mantenedorUsuarioAgregarMB.roles}"/>
+                        </p:selectOneMenu>
+                        
+                        <p:outputLabel value="Dispositivos permitidos" for="dispositivosPickList"/>
+                        <p:pickList id="dispositivosPickList" value="#{mantenedorUsuarioAgregarMB.dispositivosDualModel}" 
+                                    var="disp" itemLabel="#{disp.label}"  itemValue="#{disp}" converter="selectElemPojoConverter"/>
+                        
+                        
+                        <p:outputLabel value="Escenas permitidas" for="escenasPickList"/>
+                        <p:pickList id="escenasPickList" value="#{mantenedorUsuarioAgregarMB.escenasDualModel}" 
+                                    var="escena" itemLabel="#{escena.label}" itemValue="#{escena}" converter="selectElemPojoConverter"/>
+                        
+                        <f:facet name="footer">
+                            <p:commandButton value="Aceptar" ajax="false" action="#{mantenedorUsuarioAgregarMB.agregarUsuario()}"/>
+                            <p:commandButton value="Volver" immediate="true" action="#{mantenedorUsuarioAgregarMB.volverToLista()}"/>
+                        </f:facet>
                     </p:panelGrid>
                 </h:form>
             </ui:define>

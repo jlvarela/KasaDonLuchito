@@ -28,5 +28,7 @@ public interface UsuarioFacadeLocal {
     List<Usuario> findRange(int[] range);
 
     int count();
+
+    public void crearUsuario(String username, List<Integer> idDispositivosPermitidos, List<Integer> idEscenasPermitidas, String nombreRol) throws Exception;
     
 }

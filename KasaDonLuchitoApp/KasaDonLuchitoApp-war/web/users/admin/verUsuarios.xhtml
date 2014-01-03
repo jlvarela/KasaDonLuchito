@@ -20,11 +20,38 @@
             </ui:define> -->
             
             <ui:define name="centro">
-                <h:form id="form_login" >
+                <h:form >
                     <p:panelGrid columns="2" styleClass="centrar">
                     <f:facet name="header">Ver usuarios</f:facet>
+                        <p:dataTable value="#{mantenedorUsuariosVerListadoMB.lista}" var="user" 
+                                     emptyMessage="No hay usuarios registrados en el sistema" 
+                                     filteredValue="#{mantenedorUsuariosVerListadoMB.listaBusqueda}">
+                            <p:column headerText="Nombre de usuario" sortBy="#{user.label}" filterMatchMode="contains" filterBy="#{user.label}">
+                                <h:outputText value="#{user.label}"/>
+                            </p:column>
+                            <p:column headerText="Rol" sortBy="#{user.rol}" filterMatchMode="contains" filterBy="#{user.rol}">
+                                <h:outputText value="#{user.rol}"/>
+                            </p:column>
+                            <p:column headerText="" rendered="#{request.isUserInRole('Administrador')}">
+                                <p:commandLink value="  " styleClass=" ui-btn ui-icon-shadow ui-icon-pencil ui-icon" action="#{mantenedorUsuariosVerListadoMB.editar(user.id)}">
+                                </p:commandLink>
+                            </p:column>
+                            <p:column headerText="" rendered="#{request.isUserInRole('Administrador')}">
+                                <p:commandLink value="  " styleClass=" ui-btn ui-icon-shadow ui-icon-trash ui-icon" onclick="cd_#{user.id}.show();" />
 
+                                <p:confirmDialog message="¿Está seguro que desea eliminar el dispositivo? ya no podrá ser utilizado"
+                                                 header="Confirmación de eliminación de dispositivo" severity="alert"
+                                                 widgetVar="cd_#{user.id}" closeOnEscape="true">
+                                    <p:commandButton value="Si" actionListener="#{mantenedorUsuariosVerListadoMB.eliminar(user.id)}"
+                                                     oncomplete="cd_#{user.id}.hide();"/>
+                                    <p:commandButton value="No" onclick="cd_#{user.id}.hide();" type="button" />
+                                </p:confirmDialog>
+                            </p:column>
+                        </p:dataTable>
                         
+                        <f:facet name="footer">
+                            <p:button value="Agregar usuario" href="/faces/users/admin/agregarUsuario.xhtml" rendered="#{request.isUserInRole('Administrador')}"/>
+                         </f:facet>
                     </p:panelGrid>
                 </h:form>
             </ui:define>
