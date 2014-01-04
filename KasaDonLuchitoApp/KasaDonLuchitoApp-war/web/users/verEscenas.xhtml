@@ -20,10 +20,42 @@
             </ui:define> -->
             
             <ui:define name="centro">
-                <h:form id="form_login" >
+                <h:form>
                     <p:panelGrid columns="2" styleClass="centrar">
                     <f:facet name="header">Ver escenas</f:facet>
+                    
+                        <p:dataTable value="#{mantenedorEscenasVerListadoMB.lista}" var="escena" 
+                                     emptyMessage="No hay escenas registradas en el sistema" 
+                                     filteredValue="#{mantenedorEscenasVerListadoMB.listaBusqueda}">
+                            <p:column headerText="Nombre" sortBy="#{escena.nombre}" filterMatchMode="contains" filterBy="#{escena.nombre}">
+                                <h:outputText value="#{escena.nombre}"/>
+                            </p:column>
+                            <p:column headerText="N° de acciones" sortBy="#{escena.cantidadDispositivosManejados}">
+                                <h:outputText value="#{escena.cantidadDispositivosManejados}"/>
+                            </p:column>
+                            <p:column headerText="      " >
+                                <p:commandButton action="#{mantenedorEscenasVerListadoMB.accionar(escena.id)}" value="Activar"/>
+                            </p:column>
+                            <p:column headerText="" rendered="#{request.isUserInRole('Administrador')}">
+                                <p:commandLink value="  " styleClass=" ui-btn ui-icon-shadow ui-icon-pencil ui-icon" action="#{mantenedorEscenasVerListadoMB.editar(escena.id)}">
+                                </p:commandLink>
+                            </p:column>
+                            <p:column headerText="" rendered="#{request.isUserInRole('Administrador')}">
+                                <p:commandLink value="  " styleClass=" ui-btn ui-icon-shadow ui-icon-trash ui-icon" onclick="cd_#{escena.id}.show();" />
 
+                                <p:confirmDialog message="¿Está seguro que desea eliminar el dispositivo? ya no podrá ser utilizado"
+                                                 header="Confirmación de eliminación de dispositivo" severity="alert"
+                                                 widgetVar="cd_#{escena.id}" closeOnEscape="true">
+                                    <p:commandButton value="Si" actionListener="#{mantenedorEscenasVerListadoMB.eliminar(escena.id)}"
+                                                     oncomplete="cd_#{escena.id}.hide();"/>
+                                    <p:commandButton value="No" onclick="cd_#{escena.id}.hide();" type="button" />
+                                </p:confirmDialog>
+                            </p:column>
+                        </p:dataTable>
+                        
+                        <f:facet name="footer">
+                            <p:button value="Agregar escena" href="/faces/users/agregarEscena.xhtml" />
+                        </f:facet>
                         
                     </p:panelGrid>
                 </h:form>

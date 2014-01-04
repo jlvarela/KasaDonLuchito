@@ -6,6 +6,7 @@ package sessionBeans;
 
 import entities.Escena;
 import java.util.List;
+import java.util.Map;
 import javax.ejb.Local;
 
 /**
@@ -28,5 +29,7 @@ public interface EscenaFacadeLocal {
     List<Escena> findRange(int[] range);
 
     int count();
+
+    public void crearEscena(String nombre, Map<Integer, Integer> accionesdispositivos, List<Integer> idUsuariosPermitidos) throws Exception;
     
 }

@@ -28,13 +28,13 @@
                         <p:inputText id="nombre" value="#{mantenedorEscenaAgregarMB.nombre}" required="true">
                         </p:inputText>
                         
-                        <p:outputLabel value="Usuarios permitidos" for="usuarios"/>
-                        <p:pickList id="usuariosPickList" value="#{mantenedorEscenaAgregarMB.usuarios}" 
-                                    var="usuario" itemLabel="#{usuario.username}" itemValue="#{usuario}" />
+                        <p:outputLabel value="Usuarios permitidos" for="usuariosPickList" rendered="#{request.isUserInRole('Administrador')}"/>
+                        <p:pickList id="usuariosPickList" value="#{mantenedorEscenaAgregarMB.usuariosDualModel}" 
+                                    var="usuario" itemLabel="#{usuario.label}" itemValue="#{usuario}" rendered="#{request.isUserInRole('Administrador')}"/>
                         
-                        <p:outputLabel value="Dispositovos actuados" for="disp"/>
-                        <p:pickList id="dispositivosPickList" value="#{mantenedorEscenaAgregarMB.dispositivos}" 
-                                    var="disp" itemLabel="#{disp.nombre}" itemValue="#{disp}" />
+                        <p:outputLabel value="Dispositovos actuados" for="dispositivosPickList"/>
+                        <p:pickList id="dispositivosPickList" value="#{mantenedorEscenaAgregarMB.dispositivosDualModel}" 
+                                    var="disp" itemLabel="#{disp.label}" itemValue="#{disp}" />
                         
                         <f:facet name="footer">
                             <p:commandButton value="Aceptar" ajax="false" action="#{mantenedorEscenaAgregarMB.agregarEscena()}"/>

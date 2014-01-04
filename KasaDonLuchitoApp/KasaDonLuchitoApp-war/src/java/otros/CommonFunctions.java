@@ -32,7 +32,7 @@ public class CommonFunctions {
     }
     
     public static void goToIndex() {
-        goToPage("/faces/index.xhtml");
+        goToPage("/faces/index.xhtml?faces-redirect=true");
     }
     
     public static String getUsuarioLogueado() {

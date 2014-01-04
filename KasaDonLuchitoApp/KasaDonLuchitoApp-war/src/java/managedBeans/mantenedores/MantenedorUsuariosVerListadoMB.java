@@ -12,6 +12,9 @@ import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.inject.Named;
 import javax.enterprise.context.RequestScoped;
+import javax.faces.application.FacesMessage;
+import javax.inject.Inject;
+import otros.CommonFunctions;
 import pojos.DispositivoPojo;
 import pojos.SelectElemPojo;
 import pojos.UsuarioPojo;
@@ -26,6 +29,9 @@ import sessionBeans.UsuarioFacadeLocal;
 public class MantenedorUsuariosVerListadoMB {
     @EJB
     private UsuarioFacadeLocal usuarioFacade;
+    
+    @Inject
+    private MantenedorGenericoConversation mantUsuariosConv;
 
     private List<UsuarioPojo> lista;
     private List<UsuarioPojo> listaBusqueda;
@@ -44,6 +50,45 @@ public class MantenedorUsuariosVerListadoMB {
             lista.add(userTemp);
             listaBusqueda.add(userTemp);
         }
+    }
+    
+    public void editar(Integer num) {
+        Usuario toEdit = usuarioFacade.find(num);
+        if (toEdit != null) {
+            this.mantUsuariosConv.beginConversation();
+            this.mantUsuariosConv.setState(MantenedorGenericoConversation.EDITAR);
+            this.mantUsuariosConv.setIdToEdit(num);
+            CommonFunctions.goToPage("/faces/users/admin/editarUsuario.xhtml?cid=".concat(this.mantUsuariosConv.getConversation().getId()));
+        }
+        else {
+            //MOSTRAR ERROR
+            this.mantUsuariosConv.limpiarDatos();
+            CommonFunctions.goToIndex();
+        }
+    }
+    
+    public void eliminar(Integer num) {
+        try {
+            Usuario toEdit = usuarioFacade.find(num);
+            if (toEdit != null) {
+                usuarioFacade.remove(toEdit);
+                CommonFunctions.viewMessage(FacesMessage.SEVERITY_INFO,
+                        "Se ha eliminado el usuario",
+                        "Se ha eliminado correctamente el usuario");
+            }
+            else {
+                //MOSTRAR ERROR
+                this.mantUsuariosConv.limpiarDatos();
+                CommonFunctions.goToIndex();
+            }
+        }
+        catch (Exception e) {
+            CommonFunctions.viewMessage(FacesMessage.SEVERITY_ERROR,
+                    e.getMessage(),
+                    e.getMessage());
+        }
+        this.mantUsuariosConv.limpiarDatos();
+        CommonFunctions.goToIndex();
     }
     
     /**
