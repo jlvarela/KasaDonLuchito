@@ -79,7 +79,7 @@ public class MantenedorUsuariosVerListadoMB {
             else {
                 //MOSTRAR ERROR
                 this.mantUsuariosConv.limpiarDatos();
-                CommonFunctions.goToIndex();
+                CommonFunctions.goToPage("/faces/users/admin/verUsuarios.xhtml?faces-redirect=true");
             }
         }
         catch (Exception e) {

@@ -25,7 +25,9 @@ import javax.persistence.Transient;
 @Entity
 @NamedQueries( {
     @NamedQuery(name="Dispositivo.findById", query="SELECT u FROM Dispositivo u WHERE u.id = :id"),
-    @NamedQuery(name="Dispositivo.findByIdInterno", query="SELECT u FROM Dispositivo u WHERE u.idInterno = :idInterno")
+    @NamedQuery(name="Dispositivo.findByIdInterno", query="SELECT u FROM Dispositivo u WHERE u.idInterno = :idInterno"),
+    @NamedQuery(name="Dispositivo.findAll", query="SELECT disp FROM Dispositivo disp"),
+    @NamedQuery(name="Dispositivo.findbyUserNameLogged", query="SELECT disp FROM Usuario u JOIN u.permisoDispositivos perm JOIN perm.dispositivo disp WHERE u.username = :username")
 })
 public class Dispositivo implements Serializable {
     private static final long serialVersionUID = 1L;

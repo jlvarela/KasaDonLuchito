@@ -21,23 +21,63 @@
             
             <ui:define name="centro">
                 <h:form id="form_login" >
-                    <p:panelGrid columns="2" styleClass="centrar">
+                    <p:panelGrid columns="2" styleClass="centrar" >
                     <f:facet name="header">Agregar escena</f:facet>
 
-                        <p:outputLabel value="Nombre de la escena" for="nombre"/>
-                        <p:inputText id="nombre" value="#{mantenedorEscenaAgregarMB.nombre}" required="true">
+                        <p:outputLabel value="Nombre de la escena *" for="nombre"/>
+                        <p:inputText id="nombre" value="#{mantenedorEscenaAgregarMB.nombre}">
                         </p:inputText>
                         
                         <p:outputLabel value="Usuarios permitidos" for="usuariosPickList" rendered="#{request.isUserInRole('Administrador')}"/>
-                        <p:pickList id="usuariosPickList" value="#{mantenedorEscenaAgregarMB.usuariosDualModel}" 
+                        <p:pickList style="border-color: white;" id="usuariosPickList" value="#{mantenedorEscenaAgregarMB.usuariosDualModel}" converter="selectElemPojoConverter" 
                                     var="usuario" itemLabel="#{usuario.label}" itemValue="#{usuario}" rendered="#{request.isUserInRole('Administrador')}"/>
                         
-                        <p:outputLabel value="Dispositovos actuados" for="dispositivosPickList"/>
-                        <p:pickList id="dispositivosPickList" value="#{mantenedorEscenaAgregarMB.dispositivosDualModel}" 
-                                    var="disp" itemLabel="#{disp.label}" itemValue="#{disp}" />
+                        
+                        
+                        <p:outputLabel value="Agregar acciones" for="agregarAccionesGroup"/>
+                        <h:panelGrid id="agregarAccionesGroup" style="border-color: white;" columns="2">
+                            
+                            <h:panelGrid columns="1" style="border-color: white;">
+                            <h:panelGroup>
+                                <p:outputLabel value="Dispositivo" for="dispositivosSelect"/>
+                                <p:selectOneMenu id="dispositivosSelect" value="#{mantenedorEscenaAgregarMB.idDispSeleccionado}" >
+                                    <f:selectItem itemValue="" itemLabel="Seleccione dispositivo"/>
+                                    <p:ajax event="change" update="accion" listener="#{mantenedorEscenaAgregarMB.cargarValores}"/>
+                                    <f:selectItems value="#{mantenedorEscenaAgregarMB.dispositivos}" var="disp" itemValue="#{disp.id}" itemLabel="#{disp.label}"/>
+                                </p:selectOneMenu>
+                            </h:panelGroup>
+
+                            <h:panelGroup>
+                                <p:outputLabel value="Acción" for="accion"/>
+                                <p:selectOneMenu id="accion" value="#{mantenedorEscenaAgregarMB.valorAccionesDispositivo}" >
+                                    <f:selectItem itemValue="" itemLabel="Seleccione acción a realizar"/>
+                                    <f:selectItems value="#{mantenedorEscenaAgregarMB.valores}" var="disp" itemValue="#{disp.id}" itemLabel="#{disp.label}"/>
+                                </p:selectOneMenu>
+                            </h:panelGroup>
+                            
+                                <p:commandButton value="Agregar acción" ajax="false" action="#{mantenedorEscenaAgregarMB.agregarAccion()}" update="tablaAcciones mensaje"/>
+                                <h:outputLabel id="mensaje" value="Cantidad de acciones agregadas: #{mantenedorEscenaAgregarMB.accionesEscena.size()}" />
+                            </h:panelGrid>
+                            
+                            <h:panelGroup>
+                                <p:outputLabel value="Acciones de la escena" for="tablaAcciones"/>
+                                <p:dataTable id="tablaAcciones" value="#{mantenedorEscenaAgregarMB.accionesEscena}" var="acc" 
+                                         emptyMessage="No hay acciones definidas aún" >
+                                    <p:column headerText="Dispositivo" sortBy="#{acc.nombreDispositivo}">
+                                        <h:outputText value="#{acc.nombreDispositivo}"/>
+                                    </p:column>
+                                    <p:column headerText="Acción">
+                                        <h:outputText value="#{acc.valor}"/>
+                                    </p:column>
+                                </p:dataTable>
+                            </h:panelGroup>
+                        </h:panelGrid>
+                        
+                        
+                        
                         
                         <f:facet name="footer">
-                            <p:commandButton value="Aceptar" ajax="false" action="#{mantenedorEscenaAgregarMB.agregarEscena()}"/>
+                            <p:commandButton value="Crear escena" ajax="false" action="#{mantenedorEscenaAgregarMB.agregarEscena()}"/>
                             <p:commandButton value="Volver" immediate="true" action="#{mantenedorEscenaAgregarMB.volverToLista()}"/>
                         </f:facet>
                     </p:panelGrid>

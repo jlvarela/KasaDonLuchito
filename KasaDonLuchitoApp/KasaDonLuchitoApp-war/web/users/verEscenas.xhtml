@@ -30,8 +30,8 @@
                             <p:column headerText="Nombre" sortBy="#{escena.nombre}" filterMatchMode="contains" filterBy="#{escena.nombre}">
                                 <h:outputText value="#{escena.nombre}"/>
                             </p:column>
-                            <p:column headerText="N° de acciones" sortBy="#{escena.cantidadDispositivosManejados}">
-                                <h:outputText value="#{escena.cantidadDispositivosManejados}"/>
+                            <p:column headerText="N° de acciones" sortBy="#{escena.cantidadAcciones}">
+                                <h:outputText value="#{escena.cantidadAcciones}"/>
                             </p:column>
                             <p:column headerText="      " >
                                 <p:commandButton action="#{mantenedorEscenasVerListadoMB.accionar(escena.id)}" value="Activar"/>
@@ -54,7 +54,7 @@
                         </p:dataTable>
                         
                         <f:facet name="footer">
-                            <p:button value="Agregar escena" href="/faces/users/agregarEscena.xhtml" />
+                            <p:button value="Agregar escena" href="/faces/users/agregarEscena.xhtml?faces-redirect=true" />
                         </f:facet>
                         
                     </p:panelGrid>

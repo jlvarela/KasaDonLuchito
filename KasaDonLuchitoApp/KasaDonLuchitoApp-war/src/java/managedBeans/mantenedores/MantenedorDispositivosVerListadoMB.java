@@ -46,7 +46,8 @@ public class MantenedorDispositivosVerListadoMB {
     
     @PostConstruct
     public void init() {
-        List<Dispositivo> listaTemp = dispositivoFacade.findAll();
+        List<Dispositivo> listaTemp = dispositivoFacade.findbyUserNameLogged(CommonFunctions.getUsuarioLogueado());
+        //List<Dispositivo> listaTemp = dispositivoFacade.findAll();
         DispositivoPojo dispPojoTemp;
         lista = new LinkedList<DispositivoPojo>();
         listaBusqueda = new LinkedList<DispositivoPojo>();
@@ -71,7 +72,7 @@ public class MantenedorDispositivosVerListadoMB {
             this.mantDispositivoConv.beginConversation();
             this.mantDispositivoConv.setState(MantenedorGenericoConversation.EDITAR);
             this.mantDispositivoConv.setIdToEdit(num);
-            CommonFunctions.goToPage("/faces/users/admin/editarArduino.xhtml?cid=".concat(this.mantDispositivoConv.getConversation().getId()));
+            CommonFunctions.goToPage("/faces/users/admin/editarDispositivo.xhtml?cid=".concat(this.mantDispositivoConv.getConversation().getId()));
         }
         else {
             //MOSTRAR ERROR
@@ -86,8 +87,8 @@ public class MantenedorDispositivosVerListadoMB {
             if (toEdit != null) {
                 dispositivoFacade.remove(toEdit);
                 CommonFunctions.viewMessage(FacesMessage.SEVERITY_INFO,
-                        "Se ha eliminado el Arduino",
-                        "Se ha eliminado correctamente el Arduino");
+                        "Se ha eliminado el dispositivo",
+                        "Se ha eliminado correctamente el dispositivo");
             }
             else {
                 //MOSTRAR ERROR

@@ -28,13 +28,13 @@
                     <f:facet name="header">Menu de #{configuracionesMB.getTitulo()}
                         <h:outputLabel value="#{request.getRemoteUser()}"/>
                     </f:facet>
+                    <h:outputLink value="#{request.contextPath}/faces/users/manipularDispositivos.xhtml">Manipular dispositivos</h:outputLink>
                     <h:outputLink value="#{request.contextPath}/faces/users/admin/configuracionSistema.xhtml" rendered="#{request.isUserInRole('Administrador')}">Configuración sistema</h:outputLink>
-                    <h:outputLink value="#{request.contextPath}/faces/users/admin/verUsuarios.xhtml" rendered="#{request.isUserInRole('Administrador')}">Administrar usuarios</h:outputLink>
+                    <h:outputLink value="#{request.contextPath}/faces/users/admin/verUsuarios.xhtml" rendered="#{request.isUserInRole('Administrador')}">Ver usuarios</h:outputLink>
                     <h:outputLink value="#{request.contextPath}/faces/users/admin/agregarDispositivo.xhtml" rendered="#{request.isUserInRole('Administrador')}">Agregar dispositivo</h:outputLink>
                     <h:outputLink value="#{request.contextPath}/faces/users/admin/verArduinos.xhtml" rendered="#{request.isUserInRole('Administrador')}">Ver Arduinos</h:outputLink>
                     <h:outputLink value="#{request.contextPath}/faces/users/admin/agregarArduino.xhtml" rendered="#{request.isUserInRole('Administrador')}">Agregar Arduino</h:outputLink>
-                    <h:outputLink value="#{request.contextPath}/faces/users/manipularDispositivos.xhtml">Manipular dispositivos</h:outputLink>
-                    <h:outputLink value="#{request.contextPath}/faces/users/verEscenas.xhtml">Ver escenas</h:outputLink>
+                    <h:outputLink value="#{request.contextPath}/faces/users/verEscenas.xhtml?faces-redirect=true">Ver escenas</h:outputLink>
                     <h:outputLink value="#{request.contextPath}/faces/users/verDisparadores.xhtml">Ver disparadores</h:outputLink>
                     <h:outputLink value="#{request.contextPath}/faces/users/verTimers.xhtml">Ver timers</h:outputLink>
                     <h:commandLink action="#{autenticadorMB.logout()}">Cerrar sesión</h:commandLink>

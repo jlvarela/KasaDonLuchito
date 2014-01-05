@@ -16,6 +16,8 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 
 /**
@@ -23,6 +25,11 @@ import javax.persistence.OneToMany;
  * @author victor
  */
 @Entity
+@NamedQueries( {
+    @NamedQuery(name="Usuario.isFromType", query="SELECT count(u) FROM Usuario u WHERE u.tipoUsuario.nombreTipo = :tipoUsuario AND u.username = :username"),
+    @NamedQuery(name="Usuario.findOnlyType", query="SELECT u FROM Usuario u WHERE u.tipoUsuario.nombreTipo = :tipoUsuario"),
+        @NamedQuery(name="Usuario.findByUsername", query="SELECT u FROM Usuario u WHERE u.username = :username")
+})
 public class Usuario implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id

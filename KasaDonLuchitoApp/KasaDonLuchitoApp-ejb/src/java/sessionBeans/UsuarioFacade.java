@@ -11,11 +11,14 @@ import entities.TipoUsuario;
 import entities.Usuario;
 import java.math.BigInteger;
 import java.security.MessageDigest;
+import java.util.LinkedList;
 import java.util.List;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 
 /**
  *
@@ -44,6 +47,54 @@ public class UsuarioFacade extends AbstractFacade<Usuario> implements UsuarioFac
     }
     
     @Override
+    public boolean isAdministrador(String username) {
+        Query q = this.em.createNamedQuery("Usuario.isFromType");
+        q.setParameter("tipoUsuario", "Administrador");
+        q.setParameter("username", username);
+        try {
+            Long res = (Long)q.getSingleResult();
+            if (res != null) {
+                if (res.longValue() == 0) {
+                    return false;
+                }
+                else {
+                    return true;
+                }
+            }
+            else
+                return false;
+        }
+        catch (Exception e) {
+            return false;
+        }
+    }
+    
+    @Override
+    public List<Usuario> findOnlyUsers() {
+        Query q = this.em.createNamedQuery("Usuario.findOnlyType");
+        q.setParameter("tipoUsuario", "Usuario");
+        try {
+            return (List<Usuario>)q.getResultList();
+        }
+        catch (NoResultException nre) {
+            return new LinkedList<Usuario>();
+        }
+    }
+    
+    @Override
+    public Usuario findByUsername(String username) {
+        Usuario disp;
+        Query q = this.em.createNamedQuery("Usuario.findByUsername");
+        q.setParameter("username", username);
+        try {
+            return (Usuario)q.getSingleResult();
+        }
+        catch (Exception e) {
+            return null;
+        }
+    }
+    
+    @Override
     public void crearUsuario(String username, List<Integer> idDispositivosPermitidos, List<Integer> idEscenasPermitidas, String nombreRol) throws Exception {
         Usuario user = new Usuario();
         TipoUsuario tu = tipoUsuarioFacade.find(nombreRol);
@@ -53,7 +104,7 @@ public class UsuarioFacade extends AbstractFacade<Usuario> implements UsuarioFac
         user.setUsername(username);
         user.setTipoUsuario(tu);
         user.setPassword(getMd5(username));
-        
+        getEntityManager().persist(user);
         
         PermisoDispositivo permisoTemp;
         Dispositivo dispTemp;
@@ -67,8 +118,9 @@ public class UsuarioFacade extends AbstractFacade<Usuario> implements UsuarioFac
             permisoTemp.setVisualiza(true);
             permisoTemp.setUsuario(user);
             permisoTemp.setDispositivo(dispTemp);
-            getEntityManager().persist(permisoTemp);
             user.getPermisoDispositivos().add(permisoTemp);
+            
+            getEntityManager().persist(permisoTemp);
         }
         
         Escena escenaTemp;
@@ -78,11 +130,12 @@ public class UsuarioFacade extends AbstractFacade<Usuario> implements UsuarioFac
                 throw new Exception("No se ha encontrado escena");
             }
             escenaTemp.getUsuariosPermitidos().add(user);
-            getEntityManager().merge(escenaTemp);
             user.getEscenasPermitidas().add(escenaTemp);
+            
+            getEntityManager().merge(escenaTemp);
         }
         
-        getEntityManager().persist(user);
+        getEntityManager().merge(user);
         
     }
     

@@ -30,5 +30,11 @@ public interface UsuarioFacadeLocal {
     int count();
 
     public void crearUsuario(String username, List<Integer> idDispositivosPermitidos, List<Integer> idEscenasPermitidas, String nombreRol) throws Exception;
+
+    public List<Usuario> findOnlyUsers();
+
+    public boolean isAdministrador(String username);
+
+    public Usuario findByUsername(String username);
     
 }

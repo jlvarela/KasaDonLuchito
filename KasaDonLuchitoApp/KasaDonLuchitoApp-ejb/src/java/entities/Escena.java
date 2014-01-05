@@ -5,6 +5,7 @@
 package entities;
 
 import java.io.Serializable;
+import java.util.LinkedList;
 import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
@@ -12,6 +13,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 
 /**
@@ -19,6 +22,10 @@ import javax.persistence.OneToMany;
  * @author victor
  */
 @Entity
+@NamedQueries( {
+    @NamedQuery(name="Escena.findAll", query="SELECT e FROM Escena e"),
+    @NamedQuery(name="Escena.findbyUserNameLogged", query="SELECT e FROM Escena e JOIN e.usuariosPermitidos u WHERE u.username = :username")
+})
 public class Escena implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
@@ -33,6 +40,11 @@ public class Escena implements Serializable {
     
     @ManyToMany
     private List<Usuario> usuariosPermitidos;
+
+    public Escena() {
+        usuariosPermitidos = new LinkedList<Usuario>();
+        accionesEscena = new LinkedList<AccionEscena>();
+    }
 
     public Integer getId() {
         return id;
