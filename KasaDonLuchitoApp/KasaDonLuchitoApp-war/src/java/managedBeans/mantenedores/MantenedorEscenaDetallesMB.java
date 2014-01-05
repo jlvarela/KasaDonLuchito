@@ -13,11 +13,11 @@ import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.enterprise.context.RequestScoped;
+import javax.faces.application.FacesMessage;
 import javax.inject.Named;
 import javax.inject.Inject;
 import otros.CommonFunctions;
 import pojos.AccionPojo;
-import pojos.EscenaPojo;
 import pojos.UsuarioPojo;
 import sessionBeans.EscenaFacadeLocal;
 
@@ -68,6 +68,51 @@ public class MantenedorEscenaDetallesMB implements Serializable {
             accionPojo.setNombreDispositivo(accionEscena.getDispositivo().getNombre());
             accionPojo.setValor(accionEscena.getAccion());
             accionesEscena.add(accionPojo);
+        }
+    }
+    
+    public void accionar() {
+        Integer idEscena = mantEscenasConv.getIdToEdit();
+        if (idEscena != null) {
+            try {
+                escenaFacade.accionar(idEscena);
+                CommonFunctions.viewMessage(FacesMessage.SEVERITY_INFO,
+                        "Se ha accionado la escena",
+                        "Se ha accionado correctamente la escena");
+            }
+            catch (Exception e) {
+                CommonFunctions.viewMessage(FacesMessage.SEVERITY_ERROR,
+                        e.getMessage(),
+                        e.getMessage());
+            }
+        }
+        else {
+            CommonFunctions.viewMessage(FacesMessage.SEVERITY_ERROR,
+                        "No ha seleccionado una escena",
+                        "No tiene una escena seleccionada para accionar");
+        }
+    }
+    
+    public void editarEscena() {
+        Integer idEscena = mantEscenasConv.getIdToEdit();
+        if (idEscena != null) {
+            try {
+                this.mantEscenasConv.beginConversation();
+                this.mantEscenasConv.setState(MantenedorGenericoConversation.EDITAR);
+                this.mantEscenasConv.setIdToEdit(idEscena);
+                CommonFunctions.goToPage("/faces/users/editarEscena.xhtml?cid=".concat(this.mantEscenasConv.getConversation().getId()));
+
+            }
+            catch (Exception e) {
+                CommonFunctions.viewMessage(FacesMessage.SEVERITY_ERROR,
+                        e.getMessage(),
+                        e.getMessage());
+            }
+        }
+        else {
+            CommonFunctions.viewMessage(FacesMessage.SEVERITY_ERROR,
+                        "No ha seleccionado una escena",
+                        "No tiene una escena seleccionada para accionar");
         }
     }
     
