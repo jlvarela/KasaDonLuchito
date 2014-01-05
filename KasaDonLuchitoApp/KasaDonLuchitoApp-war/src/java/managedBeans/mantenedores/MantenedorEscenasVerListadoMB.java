@@ -65,6 +65,21 @@ public class MantenedorEscenasVerListadoMB {
         }
     }
     
+    public void detalles(Integer num) {
+        Escena toEdit = escenaFacade.find(num);
+        if (toEdit != null) {
+            this.mantEscenaConv.beginConversation();
+            this.mantEscenaConv.setState(MantenedorGenericoConversation.VER);
+            this.mantEscenaConv.setIdToEdit(num);
+            CommonFunctions.goToPage("/faces/users/detallesEscena.xhtml?cid=".concat(this.mantEscenaConv.getConversation().getId()));
+        }
+        else {
+            //MOSTRAR ERROR
+            this.mantEscenaConv.limpiarDatos();
+            CommonFunctions.goToIndex();
+        }
+    }
+    
     public void editar(Integer num) {
         Escena toEdit = escenaFacade.find(num);
         if (toEdit != null) {

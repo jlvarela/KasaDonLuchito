@@ -37,6 +37,8 @@ public interface DispositivoFacadeLocal {
 
     public List<Integer> getValoresDispositivo(Integer id);
 
-    public List<Dispositivo> findbyUserNameLogged(String username);
+    public List<Dispositivo> findOnlyActuatorsByUserNameLogged(String username);
+
+    public List<Dispositivo> findByUserNameLogged(String username);
     
 }

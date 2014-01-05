@@ -45,13 +45,38 @@ public class DispositivoFacade extends AbstractFacade<Dispositivo> implements Di
     }
     
     @Override
-    public List<Dispositivo> findbyUserNameLogged(String username) {
+    public List<Dispositivo> findOnlyActuatorsByUserNameLogged(String username) {
+        Query q;
+        if (usuarioFacade.isAdministrador(username)) {
+            q = this.em.createNamedQuery("Dispositivo.findAllActuators");
+        }
+        else {
+            q = this.em.createNamedQuery("Dispositivo.findOnlyActuatorsByUserNameLogged");
+            q.setParameter("username", username);
+        }
+        try {
+            List<Dispositivo> res = (List<Dispositivo>)q.getResultList();
+            
+            if (res == null) {
+                //System.out.println("No era admin, res es null");
+                return new LinkedList<Dispositivo>();
+            }
+            //System.out.println("No era admin, res es de largo: "+res.size());
+            return res;
+        }
+        catch (NoResultException nre) {
+            return new LinkedList<Dispositivo>();
+        }
+    }
+    
+    @Override
+    public List<Dispositivo> findByUserNameLogged(String username) {
         Query q;
         if (usuarioFacade.isAdministrador(username)) {
             q = this.em.createNamedQuery("Dispositivo.findAll");
         }
         else {
-            q = this.em.createNamedQuery("Dispositivo.findbyUserNameLogged");
+            q = this.em.createNamedQuery("Dispositivo.findByUserNameLogged");
             q.setParameter("username", username);
         }
         try {

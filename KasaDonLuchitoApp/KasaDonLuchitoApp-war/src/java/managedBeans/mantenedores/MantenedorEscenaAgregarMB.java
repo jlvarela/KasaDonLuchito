@@ -62,7 +62,7 @@ public class MantenedorEscenaAgregarMB implements Serializable{
         List<SelectElemPojo> sourceDispositivos;
         List<SelectElemPojo> sourceUsuarios, targetUsuarios;
         
-        List<Dispositivo> listaTemp = dispositivoFacade.findbyUserNameLogged(CommonFunctions.getUsuarioLogueado());
+        List<Dispositivo> listaTemp = dispositivoFacade.findOnlyActuatorsByUserNameLogged(CommonFunctions.getUsuarioLogueado());
         SelectElemPojo elemPojoTemp;
         sourceDispositivos = new LinkedList<SelectElemPojo>();
         boolean agregar;

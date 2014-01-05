@@ -1,0 +1,61 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      contentType="text/html">
+
+    <body>
+
+        <ui:composition template="/mainTemplate.xhtml">
+
+            <ui:define name="titulo">
+                Detalles de escena
+            </ui:define>
+            
+            <!--<ui:define name="botonesBarra">
+                
+            </ui:define> -->
+            
+            <ui:define name="centro">
+                <h:form>
+                    <p:panelGrid columns="2" styleClass="centrar" >
+                    <f:facet name="header">Detalles de escena</f:facet>
+
+                        <p:outputLabel value="Nombre de la escena" for="nombre"/>
+                        <p:outputLabel id="nombre" value="#{mantenedorEscenaDetallesMB.nombre}"/>
+                        
+                        <p:outputLabel value="Usuarios permitidos" for="tablaUsuarios" rendered="#{request.isUserInRole('Administrador')}"/>
+                        <p:dataTable id="tablaUsuarios" value="#{mantenedorEscenaDetallesMB.usuariosPemitidos}" var="usuario" 
+                                 emptyMessage="No hay usuarios permitidos para activar la escena" >
+                            <p:column headerText="Nombre de usuario" sortBy="#{usuario.label}">
+                                <h:outputText value="#{usuario.label}"/>
+                            </p:column>
+                        </p:dataTable>
+                        
+                        <p:outputLabel value="Acciones de la escena" for="tablaAcciones"/>
+                        <p:dataTable id="tablaAcciones" value="#{mantenedorEscenaDetallesMB.accionesEscena}" var="acc" 
+                                 emptyMessage="No hay acciones definidas aún" >
+                            <p:column headerText="Dispositivo" sortBy="#{acc.nombreDispositivo}">
+                                <h:outputText value="#{acc.nombreDispositivo}"/>
+                            </p:column>
+                            <p:column headerText="Acción">
+                                <h:outputText value="#{acc.valor}"/>
+                            </p:column>
+                        </p:dataTable>
+                        
+                        
+                        <f:facet name="footer">
+                            <p:commandButton value="Editar escena" ajax="false" action="#{mantenedorEscenaDetallesMB.editarEscena()}"/>
+                            <p:commandButton value="Volver" immediate="true" action="#{mantenedorEscenaDetallesMB.volverToLista()}"/>
+                        </f:facet>
+                    </p:panelGrid>
+                </h:form>
+            </ui:define>
+
+        </ui:composition>
+
+    </body>
+</html>

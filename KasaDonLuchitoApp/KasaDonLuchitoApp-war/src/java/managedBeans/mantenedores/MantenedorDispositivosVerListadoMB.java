@@ -46,7 +46,7 @@ public class MantenedorDispositivosVerListadoMB {
     
     @PostConstruct
     public void init() {
-        List<Dispositivo> listaTemp = dispositivoFacade.findbyUserNameLogged(CommonFunctions.getUsuarioLogueado());
+        List<Dispositivo> listaTemp = dispositivoFacade.findByUserNameLogged(CommonFunctions.getUsuarioLogueado());
         //List<Dispositivo> listaTemp = dispositivoFacade.findAll();
         DispositivoPojo dispPojoTemp;
         lista = new LinkedList<DispositivoPojo>();

@@ -4,7 +4,6 @@
  */
 package managedBeans.mantenedores;
 
-import entities.Dispositivo;
 import entities.Usuario;
 import java.util.LinkedList;
 import java.util.List;
@@ -15,8 +14,6 @@ import javax.enterprise.context.RequestScoped;
 import javax.faces.application.FacesMessage;
 import javax.inject.Inject;
 import otros.CommonFunctions;
-import pojos.DispositivoPojo;
-import pojos.SelectElemPojo;
 import pojos.UsuarioPojo;
 import sessionBeans.UsuarioFacadeLocal;
 
