@@ -12,7 +12,7 @@
         <ui:composition template="/mainTemplate.xhtml">
 
             <ui:define name="titulo">
-                Agregar placa Arduino
+                Agregar dispositivo
             </ui:define>
             
             <!--<ui:define name="botonesBarra">
@@ -22,7 +22,7 @@
             <ui:define name="centro">
                 <h:form>
                     <p:panelGrid columns="2" styleClass="centrar" >
-                        <f:facet name="header">Agregar Arduino</f:facet>
+                        <f:facet name="header">Agregar dispositivo</f:facet>
                         
                         <p:outputLabel value="Nombre del dispositivo" for="nombre"/>
                         <p:inputText id="nombre" value="#{mantenedorDispositivoAgregarMB.nombre}" required="true">

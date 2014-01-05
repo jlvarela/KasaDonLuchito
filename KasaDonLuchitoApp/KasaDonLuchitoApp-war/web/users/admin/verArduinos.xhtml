@@ -12,7 +12,7 @@
         <ui:composition template="/mainTemplate.xhtml">
 
             <ui:define name="titulo">
-                Ver placas Arduino
+                Arduinos
             </ui:define>
             
             <!--<ui:define name="botonesBarra">
@@ -23,7 +23,7 @@
                 <h:form>
                     <p:outputLabel value="Cantidad de placas administradas: #{mantenedorArduinoVerListadoMB.lista.size()}"/>
                     <p:panelGrid columns="5" styleClass="centrar" >
-                        <f:facet name="header">Listado de Arduino</f:facet>
+                        <f:facet name="header">Listado de Arduinos</f:facet>
                         
                         <p:dataTable value="#{mantenedorArduinoVerListadoMB.lista}" var="ardu" 
                                      emptyMessage="No hay arduinos registrados en el sistema" 

@@ -99,6 +99,45 @@ public class MantenedorEscenaAgregarMB implements Serializable{
         
     }
     
+    public void eliminarAccion(Integer idDisp) {
+        System.out.println("Eliminando acción para el dispositivo con id="+idDisp);
+        if (idDisp == null) {
+            CommonFunctions.viewMessage(FacesMessage.SEVERITY_ERROR,
+                    "Ha ocurrido un error al eliminar la acción",
+                    "No ha sido posible eliminar la acción, vuelva a intentarlo más adelante");
+            return;
+        }
+        //Se elimina la acción de la tabla de acciones
+        int idSelecInt = idDisp.intValue();
+        Iterator<AccionPojo> it = accionesEscena.iterator();
+        AccionPojo elem = null;
+        while (it.hasNext()) {
+            elem = it.next(); // must be called before you can call i.remove()
+            // Do something
+            if (elem.getIdDispositivo().intValue() == idSelecInt) {
+                it.remove();
+                break;
+            }
+        }
+        
+        //Se agrega el dispositivo ahora disponible a la lista de dispositivos
+        if (elem != null) {
+            dispositivos.add(new SelectElemPojo(elem.getIdDispositivo().toString(), elem.getNombreDispositivo()));
+            CommonFunctions.viewMessage(FacesMessage.SEVERITY_INFO,
+                    "Se ha eliminado una acción",
+                    "Se ha la acción de la escena que se está creando");
+        }
+        else {
+            CommonFunctions.viewMessage(FacesMessage.SEVERITY_ERROR,
+                    "Ha ocurrido un error al eliminar la acción",
+                    "No ha sido posible eliminar la acción, vuelva a intentarlo más adelante");
+        }
+        
+        System.out.println("acción eliminada para elem");
+        
+        
+    }
+    
     public void agregarAccion() {
         if ((idDispSeleccionado != null) && (valorAccionesDispositivo != null)) {
             Dispositivo d = dispositivoFacade.find(idDispSeleccionado);

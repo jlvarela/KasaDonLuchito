@@ -12,7 +12,7 @@
         <ui:composition template="/mainTemplate.xhtml">
 
             <ui:define name="titulo">
-                Bienvenido a Mi Kaaza
+                Usuarios
             </ui:define>
             
             <!--<ui:define name="botonesBarra">
@@ -20,9 +20,9 @@
             </ui:define> -->
             
             <ui:define name="centro">
-                <h:form >
+                <h:form>
                     <p:panelGrid columns="2" styleClass="centrar">
-                    <f:facet name="header">Ver usuarios</f:facet>
+                    <f:facet name="header">Listado de usuarios</f:facet>
                         <p:dataTable value="#{mantenedorUsuariosVerListadoMB.lista}" var="user" 
                                      emptyMessage="No hay usuarios registrados en el sistema" 
                                      filteredValue="#{mantenedorUsuariosVerListadoMB.listaBusqueda}">
