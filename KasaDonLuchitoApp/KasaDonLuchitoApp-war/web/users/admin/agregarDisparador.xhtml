@@ -22,8 +22,27 @@
             <ui:define name="centro">
                 <h:form>
                     <p:panelGrid columns="2" styleClass="centrar">
-                    <f:facet name="header">Agregar disparador</f:facet>
+                        <f:facet name="header">Agregar disparador</f:facet>
+                        
+                        <p:outputLabel value="Nombre del disparador" for="nombre"/>
+                        <p:inputText id="nombre" value="#{mantenedorDisparadorAgregarMB.nombre}" required="true">
+                        </p:inputText>
+                        
+                        <p:outputLabel value="¿Acciona una escena o dispositivo?" for="queAcciona"/>
+                        <p:selectBooleanButton id="queAcciona" value="#{mantenedorDisparadorAgregarMB.accionaEscena}" onLabel="Escena" offLabel="Dispositivo" />
+                        
+                        <p:outputLabel value="Dispositivo" for="dispositivosSelect"/>
+                        <p:selectOneMenu id="dispositivosSelect" value="#{mantenedorDisparadorAgregarMB.idDispSeleccionado}" >
+                            <f:selectItem itemValue="" itemLabel="Seleccione dispositivo"/>
+                            <p:ajax event="change" update="accion" listener="#{mantenedorDisparadorAgregarMB.cargarValores}"/>
+                            <f:selectItems value="#{mantenedorDisparadorAgregarMB.dispositivos}" var="disp" itemValue="#{disp.id}" itemLabel="#{disp.label}"/>
+                        </p:selectOneMenu>
 
+                        <p:outputLabel value="Acción" for="accion"/>
+                        <p:selectOneMenu id="accion" value="#{mantenedorDisparadorAgregarMB.valorAccionesDispositivo}" >
+                            <f:selectItem itemValue="" itemLabel="Seleccione acción a realizar"/>
+                            <f:selectItems value="#{mantenedorDisparadorAgregarMB.valores}" var="disp" itemValue="#{disp.id}" itemLabel="#{disp.label}"/>
+                        </p:selectOneMenu>
                         
                     </p:panelGrid>
                 </h:form>

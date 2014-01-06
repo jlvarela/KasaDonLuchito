@@ -5,6 +5,8 @@
 package sessionBeans;
 
 import entities.Timer;
+import java.util.Date;
+import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -25,6 +27,13 @@ public class TimerFacade extends AbstractFacade<Timer> implements TimerFacadeLoc
 
     public TimerFacade() {
         super(Timer.class);
+    }
+    
+    @Override
+    public void crearTimer(String nombre, Date hora, List<String> dias, 
+            boolean accionaEscena, Integer idDispSeleccionado, 
+            Integer valorAccionDispositivo,  Integer idEscenaSeleccionada) throws Exception {
+        
     }
     
 }

@@ -22,9 +22,13 @@
             <ui:define name="centro">
                 <h:form>
                     <p:panelGrid columns="2" styleClass="centrar">
-                    <f:facet name="header">Ver timers</f:facet>
+                        <f:facet name="header">Ver timers</f:facet>
 
                         
+                        
+                        <f:facet name="footer">
+                            <p:button value="Agregar timer" href="/faces/users/admin/agregarTimer.xhtml" rendered="#{request.isUserInRole('Administrador')}"/>
+                        </f:facet>
                     </p:panelGrid>
                 </h:form>
             </ui:define>

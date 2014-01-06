@@ -5,6 +5,7 @@
 package sessionBeans;
 
 import entities.Timer;
+import java.util.Date;
 import java.util.List;
 import javax.ejb.Local;
 
@@ -28,5 +29,7 @@ public interface TimerFacadeLocal {
     List<Timer> findRange(int[] range);
 
     int count();
+
+    public void crearTimer(String nombre, Date hora, List<String> dias, boolean accionaEscena, Integer idDispSeleccionado, Integer valorAccionDispositivo, Integer idEscenaSeleccionada) throws Exception;
     
 }

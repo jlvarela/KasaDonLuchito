@@ -76,9 +76,7 @@ public class MantenedorEscenaAgregarMB implements Serializable{
                 }
             }
             if (agregar) {
-                elemPojoTemp = new SelectElemPojo();
-                elemPojoTemp.setId(t.getId().toString());
-                elemPojoTemp.setLabel(t.getNombre());
+                elemPojoTemp = new SelectElemPojo(t.getId().toString(), t.getNombre());
                 sourceDispositivos.add(elemPojoTemp);
             }
             
@@ -88,9 +86,7 @@ public class MantenedorEscenaAgregarMB implements Serializable{
         sourceUsuarios = new LinkedList<SelectElemPojo>();
         targetUsuarios = new LinkedList<SelectElemPojo>();
         for(Usuario t : listaTemp2) {
-            elemPojoTemp = new SelectElemPojo();
-            elemPojoTemp.setId(t.getId().toString());
-            elemPojoTemp.setLabel(t.getUsername());
+            elemPojoTemp = new SelectElemPojo(t.getId().toString(), t.getUsername());
             sourceUsuarios.add(elemPojoTemp);
         }
         

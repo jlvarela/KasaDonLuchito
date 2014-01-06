@@ -20,11 +20,66 @@
             </ui:define> -->
             
             <ui:define name="centro">
-                <h:form>
+                <h:form id="form_agregar">
                     <p:panelGrid columns="2" styleClass="centrar">
                     <f:facet name="header">Agregar timer</f:facet>
-
+                        <p:outputLabel value="Nombre del timer" for="nombre"/>
+                        <p:inputText id="nombre" value="#{mantenedorTimerAgregarMB.nombre}" required="true">
+                        </p:inputText>
                         
+                        <p:outputLabel value="Hora en que se acciona" for="hora"/>
+                        <p:calendar id="hora" value="#{mantenedorTimerAgregarMB.hora}" pattern="HH:mm" timeOnly="true" required="true"/>
+                        
+                        <p:outputLabel value="Días en que se acciona" for="dias"/>
+                        <p:selectManyCheckbox id="dias" value="#{mantenedorTimerAgregarMB.dias}"  
+                            layout="pageDirection">  
+                            <f:selectItem itemLabel="Lunes" itemValue="l" />  
+                            <f:selectItem itemLabel="Martes" itemValue="m" />  
+                            <f:selectItem itemLabel="Miercoles" itemValue="w" />
+                            <f:selectItem itemLabel="Jueves" itemValue="j" />
+                            <f:selectItem itemLabel="Viernes" itemValue="v" />
+                            <f:selectItem itemLabel="Sábado" itemValue="s" />
+                            <f:selectItem itemLabel="Domingo" itemValue="d" />
+                        </p:selectManyCheckbox>
+                        
+                        <p:outputLabel value="¿Acciona una escena o dispositivo?" for="queAcciona"/>
+                        <p:selectBooleanButton id="queAcciona" value="#{mantenedorTimerAgregarMB.accionaEscena}" onLabel="Escena" offLabel="Dispositivo" >
+                            <p:ajax event="change" listener="#{mantenedorTimerAgregarMB.queAccionaCambiado}" update="grupo_labels grupo_elems"/>
+                        </p:selectBooleanButton>
+                        
+                        <h:panelGroup id="grupo_labels" >
+                        <p:outputLabel rendered="#{!mantenedorTimerAgregarMB.accionaEscena}" value="Dispositivo que acciona" for="dispositivosSelect"/>
+                        <p:outputLabel rendered="#{mantenedorTimerAgregarMB.accionaEscena}" value="Escena que acciona" for="escenaSelect"/>
+                        </h:panelGroup>
+                        
+                        <h:panelGroup id="grupo_elems" >
+                        <h:panelGroup rendered="#{!mantenedorTimerAgregarMB.accionaEscena}">
+                            <p:outputLabel value="Dispositivo a actuar" for="dispositivosSelect"/>
+                            <p:selectOneMenu id="dispositivosSelect" value="#{mantenedorTimerAgregarMB.idDispSeleccionado}" >
+                                <f:selectItem itemValue="" itemLabel="Seleccione dispositivo"/>
+                                <p:ajax event="change" update="accion" listener="#{mantenedorTimerAgregarMB.cargarValores}"/>
+                                <f:selectItems value="#{mantenedorTimerAgregarMB.dispositivos}" var="disp" itemValue="#{disp.id}" itemLabel="#{disp.label}"/>
+                            </p:selectOneMenu>
+
+                            <p:outputLabel value="acción del dispositivo" for="dispositivosSelect"/>
+                            <p:selectOneMenu id="accion" value="#{mantenedorTimerAgregarMB.valorAccionDispositivo}">
+                                <f:selectItem itemValue="" itemLabel="Seleccione acción"/>
+                                <f:selectItems value="#{mantenedorTimerAgregarMB.valores}" var="disp" itemValue="#{disp.id}" itemLabel="#{disp.label}"/>
+                            </p:selectOneMenu>
+                        </h:panelGroup>
+                        
+                        
+                        <p:selectOneMenu rendered="#{mantenedorTimerAgregarMB.accionaEscena}" id="escenaSelect" value="#{mantenedorTimerAgregarMB.idEscenaSeleccionada}">
+                            <f:selectItem itemValue="" itemLabel="Seleccione a accionar"/>
+                            <f:selectItems value="#{mantenedorTimerAgregarMB.escenas}" var="esc" itemValue="#{esc.id}" itemLabel="#{esc.label}"/>
+                        </p:selectOneMenu>
+                        
+                        </h:panelGroup>
+                        
+                        <f:facet name="footer">
+                            <p:commandButton value="Crear timer" ajax="false" action="#{mantenedorTimerAgregarMB.agregarTimer()}"/>
+                            <p:commandButton value="Volver" immediate="true" action="#{mantenedorTimerAgregarMB.volverToLista()}"/>
+                        </f:facet>
                     </p:panelGrid>
                 </h:form>
             </ui:define>

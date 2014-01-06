@@ -52,6 +52,8 @@ public class Timer implements Serializable {
     @ManyToOne
     private Dispositivo dispositivoQueAcciona;
     
+    private Integer valorAccionDispositivo;
+    
     @ManyToOne
     private Escena escenaQueAcciona;
     
@@ -149,6 +151,14 @@ public class Timer implements Serializable {
 
     public void setDispositivoQueAcciona(Dispositivo dispositivoQueAcciona) {
         this.dispositivoQueAcciona = dispositivoQueAcciona;
+    }
+
+    public Integer getValorAccionDispositivo() {
+        return valorAccionDispositivo;
+    }
+
+    public void setValorAccionDispositivo(Integer valorAccionDispositivo) {
+        this.valorAccionDispositivo = valorAccionDispositivo;
     }
 
     public Escena getEscenaQueAcciona() {
