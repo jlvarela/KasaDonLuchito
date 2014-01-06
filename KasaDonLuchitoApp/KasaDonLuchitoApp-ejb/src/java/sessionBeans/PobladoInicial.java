@@ -7,15 +7,19 @@ package sessionBeans;
 import entities.Arduino;
 import entities.Configuracion;
 import entities.Dispositivo;
+import entities.Timer;
 import entities.TipoDispositivo;
 import entities.TipoUsuario;
 import entities.Usuario;
 import java.math.BigInteger;
 import java.security.MessageDigest;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -26,6 +30,8 @@ import javax.persistence.PersistenceContext;
  */
 @Stateless
 public class PobladoInicial implements PobladoInicialLocal {
+    @EJB
+    private TimerExecutorLocal timerExecutor;
     @PersistenceContext(unitName = "KasaDonLuchitoApp-ejbPU")
     private EntityManager em;
     
@@ -74,10 +80,32 @@ public class PobladoInicial implements PobladoInicialLocal {
         user.setTipoUsuario(tiposDeUsuarios.get(0));
         user.setPassword(getMd5("admin"));
         
+        Timer t = new Timer();
+        t.setNombre("timer de prueba");
+        t.setActivo(true);
+        t.setDispositivoQueAcciona(d1);
+        t.setEscenaQueAcciona(null);
+        t.setValorAccionDispositivo(1);
+        t.setUsuarioCreador(user);
+        Date hora = Calendar.getInstance().getTime();
+        hora.setMinutes(hora.getMinutes()+1);
+        t.setHora(hora);
+        t.setRepetirLunes(true);
+        t.setRepetirMartes(true);
+        t.setRepetirMiercoles(true);
+        t.setRepetirJueves(true);
+        t.setRepetirViernes(true);
+        t.setRepetirSabado(true);
+        t.setRepetirDomingo(true);
+        
         persist(user);
         persist(arduino);
         persist(d1);
         persist(d2);
+        persist(t);
+        em.flush();
+        em.refresh(t);
+        timerExecutor.agregarTimer(t);
         
         //Tirando configuraciones básicas
         Configuracion config = new Configuracion("fondo_app", "fondo3.jpg");

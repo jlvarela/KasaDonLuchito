@@ -22,6 +22,8 @@ import javax.persistence.PersistenceContext;
 @Stateless
 public class TimerFacade extends AbstractFacade<Timer> implements TimerFacadeLocal {
     @EJB
+    private TimerExecutorLocal timerExecutor;
+    @EJB
     private UsuarioFacadeLocal usuarioFacade;
     @EJB
     private EscenaFacadeLocal escenaFacade;
@@ -37,6 +39,12 @@ public class TimerFacade extends AbstractFacade<Timer> implements TimerFacadeLoc
 
     public TimerFacade() {
         super(Timer.class);
+    }
+    
+    @Override
+    public void eliminarTimer(Timer t) {
+        timerExecutor.eliminarTimer(t);
+        remove(t);
     }
     
     @Override
@@ -102,8 +110,12 @@ public class TimerFacade extends AbstractFacade<Timer> implements TimerFacadeLoc
         }
         
         create(t);
+        em.flush();
+        em.refresh(t);
         
         //Avisar al managed beans que ejecuta los timers
+        timerExecutor.agregarTimer(t);
+        
     }
     
 }

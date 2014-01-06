@@ -41,5 +41,7 @@ public interface TimerFacadeLocal {
     public void crearTimer(String nombre, Date hora, List<Integer> dias,
             boolean accionaEscena, Integer idDispSeleccionado, Integer valorAccionDispositivo, 
             Integer idEscenaSeleccionada, String usernameCreador) throws Exception;
+
+    public void eliminarTimer(Timer t);
     
 }

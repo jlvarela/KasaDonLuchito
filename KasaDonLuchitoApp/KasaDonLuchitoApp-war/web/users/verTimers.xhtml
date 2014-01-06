@@ -24,7 +24,7 @@
                     <p:panelGrid columns="2" styleClass="centrar">
                         <f:facet name="header">Ver timers</f:facet>
                             <p:dataTable value="#{mantenedorTimersVerListadoMB.lista}" var="timer" 
-                                        emptyMessage="No hay escenas registradas en el sistema" 
+                                        emptyMessage="No hay timers registrados en el sistema" 
                                         filteredValue="#{mantenedorTimersVerListadoMB.listaBusqueda}">
                                 <p:column headerText="Nombre" sortBy="#{timer.nombre}" filterMatchMode="contains" filterBy="#{timer.nombre}">
                                     <h:outputText value="#{timer.nombre}"/>

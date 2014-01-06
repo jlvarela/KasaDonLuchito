@@ -152,7 +152,7 @@ public class MantenedorTimersVerListadoMB {
         try {
             Timer toEdit = timerFacade.find(num);
             if (toEdit != null) {
-                timerFacade.remove(toEdit);
+                timerFacade.eliminarTimer(toEdit);
                 CommonFunctions.viewMessage(FacesMessage.SEVERITY_INFO,
                         "Se ha eliminado el timer",
                         "Se ha eliminado correctamente el timer");
