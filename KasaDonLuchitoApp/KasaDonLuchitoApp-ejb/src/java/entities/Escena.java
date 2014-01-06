@@ -8,11 +8,14 @@ import java.io.Serializable;
 import java.util.LinkedList;
 import java.util.List;
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
@@ -34,6 +37,9 @@ public class Escena implements Serializable {
     
     private String nombre;
     
+    @JoinColumn(nullable = false)
+    @ManyToOne
+    private Usuario usuarioCreador;
     
     @OneToMany(mappedBy = "escena", cascade = CascadeType.REMOVE)
     private List<AccionEscena> accionesEscena;
@@ -96,6 +102,14 @@ public class Escena implements Serializable {
             return false;
         }
         return true;
+    }
+
+    public Usuario getUsuarioCreador() {
+        return usuarioCreador;
+    }
+
+    public void setUsuarioCreador(Usuario usuarioCreador) {
+        this.usuarioCreador = usuarioCreador;
     }
 
     @Override

@@ -41,10 +41,20 @@ public class MantenedorEscenasVerListadoMB {
         EscenaPojo elemPojo;
         lista = new LinkedList<EscenaPojo>();
         listaBusqueda = new LinkedList<EscenaPojo>();
+        String usernameActual = CommonFunctions.getUsuarioLogueado();
         for(Escena t : listaTemp) {
             elemPojo = new EscenaPojo();
             elemPojo.setId(t.getId());
             elemPojo.setNombre(t.getNombre());
+            elemPojo.setEsCreador(false);
+            //Si es el usuario creador, puede editarla y eliminarla
+            if (usernameActual.equals(t.getUsuarioCreador().getUsername())) {
+                elemPojo.setEsCreador(true);
+            }
+            //O si es administrador, puede hacer lo que sea
+            if (CommonFunctions.isUserInRole("Administrador")) {
+                elemPojo.setEsCreador(true);
+            }
             elemPojo.setCantidadAcciones(t.getAccionesEscena().size());
             lista.add(elemPojo);
             listaBusqueda.add(elemPojo);

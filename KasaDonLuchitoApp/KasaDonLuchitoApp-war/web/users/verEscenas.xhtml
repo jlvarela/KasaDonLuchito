@@ -36,15 +36,18 @@
                             <p:column headerText="      " >
                                 <p:commandButton action="#{mantenedorEscenasVerListadoMB.accionar(escena.id)}" value="Activar"/>
                             </p:column>
-                            <p:column headerText="" rendered="#{request.isUserInRole('Administrador')}">
+                            <p:column headerText="      ">
                                 <p:commandLink value="  " styleClass=" ui-btn ui-icon-shadow ui-icon-search ui-icon" action="#{mantenedorEscenasVerListadoMB.detalles(escena.id)}">
                                 </p:commandLink>
                             </p:column>
-                            <p:column headerText="" rendered="#{request.isUserInRole('Administrador')}">
+                            <p:column headerText="      ">
+                                <h:panelGroup  rendered="#{escena.esCreador}">
                                 <p:commandLink value="  " styleClass=" ui-btn ui-icon-shadow ui-icon-pencil ui-icon" action="#{mantenedorEscenasVerListadoMB.editar(escena.id)}">
                                 </p:commandLink>
+                                </h:panelGroup>
                             </p:column>
-                            <p:column headerText="" rendered="#{request.isUserInRole('Administrador')}">
+                            <p:column headerText="      ">
+                                <h:panelGroup  rendered="#{escena.esCreador}">
                                 <p:commandLink value="  " styleClass=" ui-btn ui-icon-shadow ui-icon-trash ui-icon" onclick="cd_#{escena.id}.show();" />
 
                                 <p:confirmDialog message="¿Está seguro que desea eliminar el dispositivo? ya no podrá ser utilizado"
@@ -54,6 +57,7 @@
                                                      oncomplete="cd_#{escena.id}.hide();"/>
                                     <p:commandButton value="No" onclick="cd_#{escena.id}.hide();" type="button" />
                                 </p:confirmDialog>
+                                </h:panelGroup>
                             </p:column>
                         </p:dataTable>
                         

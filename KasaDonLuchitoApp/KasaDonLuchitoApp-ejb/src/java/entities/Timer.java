@@ -11,6 +11,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Temporal;
 
@@ -30,6 +31,10 @@ public class Timer implements Serializable {
     
     @Column(nullable = false)
     private boolean activo;
+    
+    @JoinColumn(nullable = false)
+    @ManyToOne
+    private Usuario usuarioCreador;
     
     @Temporal(javax.persistence.TemporalType.TIME)
     private Date hora;
@@ -79,6 +84,14 @@ public class Timer implements Serializable {
 
     public void setActivo(boolean activo) {
         this.activo = activo;
+    }
+
+    public Usuario getUsuarioCreador() {
+        return usuarioCreador;
+    }
+
+    public void setUsuarioCreador(Usuario usuarioCreador) {
+        this.usuarioCreador = usuarioCreador;
     }
 
     public Date getHora() {

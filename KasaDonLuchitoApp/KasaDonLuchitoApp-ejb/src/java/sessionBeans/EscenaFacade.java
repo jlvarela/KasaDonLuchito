@@ -84,7 +84,7 @@ public class EscenaFacade extends AbstractFacade<Escena> implements EscenaFacade
     }
     
     @Override
-    public void crearEscena(String nombre, Map<Integer, Integer> accionesdispositivos, List<Integer> idUsuariosPermitidos) throws Exception {
+    public void crearEscena(String nombre, Map<Integer, Integer> accionesdispositivos, List<Integer> idUsuariosPermitidos, String usernameCreador) throws Exception {
         if (nombre == null) {
             throw new Exception("La escena debe tener un nombre");
         }
@@ -94,9 +94,17 @@ public class EscenaFacade extends AbstractFacade<Escena> implements EscenaFacade
         else if (accionesdispositivos.isEmpty()) {
             throw new Exception("La escena no tiene acciones");
         }
+        else if (usernameCreador == null) {
+            throw new Exception("La escena debe ser creada por un usuario, no ha especificado uno");
+        }
+        Usuario user = usuarioFacade.findByUsername(usernameCreador);
+        if (user == null) {
+            throw new Exception("La escena debe ser creada por un usuario válido, no se ha encontrado el usuario");
+        }
         
         Escena escena = new Escena();
         escena.setNombre(nombre);
+        escena.setUsuarioCreador(user);
         getEntityManager().persist(escena);
         
         Dispositivo dispTemp;

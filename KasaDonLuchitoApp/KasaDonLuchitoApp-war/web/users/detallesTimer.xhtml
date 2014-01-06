@@ -1,0 +1,53 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      contentType="text/html">
+
+    <body>
+
+        <ui:composition template="/mainTemplate.xhtml">
+
+            <ui:define name="titulo">
+                Detalles de timer
+            </ui:define>
+            
+            <!--<ui:define name="botonesBarra">
+                
+            </ui:define> -->
+            
+            <ui:define name="centro">
+                <h:form>
+                    <p:panelGrid columns="2" styleClass="centrar" >
+                    <f:facet name="header">Detalles de timer</f:facet>
+
+                        <p:outputLabel value="Nombre del timer" for="nombre"/>
+                        <p:outputLabel id="nombre" value="#{mantenedorTimerDetallesMB.nombre}"/>
+                        
+                        <p:outputLabel value="Usuario creador" for="usuarioCreador"/>
+                        <p:outputLabel id="usuarioCreador" value="#{mantenedorTimerDetallesMB.usuarioCreador}"/>
+                        
+                        <p:outputLabel value="Acción del timer" for="accion"/>
+                        <p:outputLabel value="Hacer X cosa" id="accion"/>
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        <f:facet name="footer">
+                            <p:commandButton value="Editar timer" ajax="false" action="#{mantenedorTimerDetallesMB.editarTimer()}"/>
+                            <p:commandButton value="Volver" immediate="true" action="#{mantenedorTimerDetallesMB.volverToLista()}"/>
+                        </f:facet>
+                    </p:panelGrid>
+                </h:form>
+            </ui:define>
+
+        </ui:composition>
+
+    </body>
+</html>

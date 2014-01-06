@@ -182,7 +182,7 @@ public class MantenedorEscenaAgregarMB implements Serializable{
             for (AccionPojo a : getAccionesEscena()) {
                 mapaDispValor.put(a.getIdDispositivo(), a.getValor());
             }
-            escenaFacade.crearEscena(nombre, mapaDispValor, idUsuarios);
+            escenaFacade.crearEscena(nombre, mapaDispValor, idUsuarios, CommonFunctions.getUsuarioLogueado());
             CommonFunctions.viewMessage(FacesMessage.SEVERITY_INFO,
                     "Se ha creado una escena",
                     "Se ha creado la escena \"".concat(nombre).concat("\""));

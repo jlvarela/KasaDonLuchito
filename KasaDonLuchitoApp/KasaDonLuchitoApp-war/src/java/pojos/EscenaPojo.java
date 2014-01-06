@@ -12,6 +12,7 @@ public class EscenaPojo {
     Integer id;
     String nombre;
     Integer cantidadAcciones;
+    boolean esCreador;
 
     public Integer getId() {
         return id;
@@ -35,6 +36,14 @@ public class EscenaPojo {
 
     public void setCantidadAcciones(Integer cantidadAcciones) {
         this.cantidadAcciones = cantidadAcciones;
+    }
+
+    public boolean isEsCreador() {
+        return esCreador;
+    }
+
+    public void setEsCreador(boolean esCreador) {
+        this.esCreador = esCreador;
     }
     
 }

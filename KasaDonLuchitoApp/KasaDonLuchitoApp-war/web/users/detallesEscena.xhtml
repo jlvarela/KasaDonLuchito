@@ -29,7 +29,7 @@
                         
                         <p:outputLabel value="Usuarios permitidos" for="tablaUsuarios" rendered="#{request.isUserInRole('Administrador')}"/>
                         <p:dataTable id="tablaUsuarios" value="#{mantenedorEscenaDetallesMB.usuariosPemitidos}" var="usuario" 
-                                 emptyMessage="No hay usuarios permitidos para activar la escena" >
+                                 emptyMessage="No hay usuarios permitidos para activar la escena" rendered="#{request.isUserInRole('Administrador')}">
                             <p:column headerText="Nombre de usuario" sortBy="#{usuario.label}">
                                 <h:outputText value="#{usuario.label}"/>
                             </p:column>

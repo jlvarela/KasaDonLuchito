@@ -7,13 +7,13 @@ package managedBeans.mantenedores;
 import entities.Dispositivo;
 import entities.Escena;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.inject.Named;
-import javax.enterprise.context.RequestScoped;
 import javax.faces.application.FacesMessage;
 import javax.faces.view.ViewScoped;
 import otros.CommonFunctions;
@@ -66,7 +66,7 @@ public class MantenedorTimerAgregarMB implements Serializable {
             dispositivos.add(elemPojoTemp);
         }
         
-        List<Escena> listaTemp2 = escenaFacade.findAll();
+        List<Escena> listaTemp2 = escenaFacade.findbyUserNameLogged(CommonFunctions.getUsuarioLogueado());
         for(Escena t : listaTemp2) {
             elemPojoTemp = new SelectElemPojo(t.getId().toString(), t.getNombre());
             escenas.add(elemPojoTemp);
@@ -86,22 +86,24 @@ public class MantenedorTimerAgregarMB implements Serializable {
     }
     
     public void queAccionaCambiado() {
-        System.out.println("Se ha presionado el botón 'accionaEscena' "+accionaEscena);
+        //System.out.println("Se ha presionado el botón 'accionaEscena' "+accionaEscena);
     }
     
-    public void agregarEscena() {
-        /*
-        List<Integer> idUsuarios = new LinkedList();
-        for(SelectElemPojo s : usuariosDualModel.getTarget()) {
-            idUsuarios.add(Integer.parseInt(s.getId()));
-        }
-        if (!CommonFunctions.isUserInRole("Administrador")) {
-            Integer idUser = usuarioFacade.findByUsername(CommonFunctions.getUsuarioLogueado()).getId();
-            idUsuarios.add(idUser);
-        }
-        */
+    public void agregarTimer() {
+        List<Integer> diasInteger = new ArrayList<Integer>(7);
         try {
-            timerFacade.crearTimer(nombre, hora, dias, accionaEscena, idDispSeleccionado, valorAccionDispositivo, idEscenaSeleccionada);
+            for(String diaStr : dias) {
+                diasInteger.add(new Integer(Integer.parseInt(diaStr)));
+            }
+        }
+        catch (Exception e) {
+            CommonFunctions.viewMessage(FacesMessage.SEVERITY_ERROR, 
+                    "Los días seleccionados no son de tipo entero", 
+                    e.getMessage());
+            CommonFunctions.goToPage("/faces/users/agregarTimer.xhtml?faces-redirect=true");
+        }
+        try {
+            timerFacade.crearTimer(nombre, hora, diasInteger, accionaEscena, idDispSeleccionado, valorAccionDispositivo, idEscenaSeleccionada, CommonFunctions.getUsuarioLogueado());
             CommonFunctions.viewMessage(FacesMessage.SEVERITY_INFO,
                     "Se ha creado un timer",
                     "Se ha creado el timer \"".concat(nombre).concat("\""));
@@ -111,7 +113,7 @@ public class MantenedorTimerAgregarMB implements Serializable {
             CommonFunctions.viewMessage(FacesMessage.SEVERITY_ERROR, 
                     e.getMessage(), 
                     e.getMessage());
-            CommonFunctions.goToPage("/faces/users/admin/agregarTimer.xhtml?faces-redirect=true");
+            CommonFunctions.goToPage("/faces/users/agregarTimer.xhtml?faces-redirect=true");
         }
     }
 

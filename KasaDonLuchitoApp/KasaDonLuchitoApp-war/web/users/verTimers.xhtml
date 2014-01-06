@@ -23,11 +23,54 @@
                 <h:form>
                     <p:panelGrid columns="2" styleClass="centrar">
                         <f:facet name="header">Ver timers</f:facet>
+                            <p:dataTable value="#{mantenedorTimersVerListadoMB.lista}" var="timer" 
+                                        emptyMessage="No hay escenas registradas en el sistema" 
+                                        filteredValue="#{mantenedorTimersVerListadoMB.listaBusqueda}">
+                                <p:column headerText="Nombre" sortBy="#{timer.nombre}" filterMatchMode="contains" filterBy="#{timer.nombre}">
+                                    <h:outputText value="#{timer.nombre}"/>
+                                </p:column>
+                                <p:column headerText="Acción a realizar">
+                                   <h:outputText value="#{timer.accionARealizar}"/>
+                                </p:column>
+                                <p:column headerText="Hora de ejecución">
+                                   <h:outputText value="#{timer.hora}"/>
+                                </p:column>
+                                <p:column headerText="Repetir">
+                                   <h:outputText value="#{timer.cuandoRepetir}"/>
+                                </p:column>
+                                <p:column headerText="Activado" >
+                                    <p:selectBooleanCheckbox value="#{timer.activado}" disabled="true"/>
+                                </p:column>
+                                <!--
+                                <p:column headerText="">
+                                    <p:commandLink value="  " styleClass=" ui-btn ui-icon-shadow ui-icon-search ui-icon" action="#{mantenedorTimersVerListadoMB.detalles(timer.id)}">
+                                    </p:commandLink>
+                                </p:column>
+                                -->
+                                <p:column headerText="">
+                                    <h:panelGroup rendered="#{timer.esCreador}">
+                                    <p:commandLink value="  " styleClass=" ui-btn ui-icon-shadow ui-icon-pencil ui-icon" action="#{mantenedorTimersVerListadoMB.editar(timer.id)}">
+                                    </p:commandLink>
+                                    </h:panelGroup>
+                                </p:column>
+                                <p:column headerText="">
+                                    <h:panelGroup rendered="#{timer.esCreador}">
+                                    <p:commandLink value="  " styleClass=" ui-btn ui-icon-shadow ui-icon-trash ui-icon" onclick="cd_#{timer.id}.show();" />
 
+                                    <p:confirmDialog message="¿Está seguro que desea eliminar el dispositivo? ya no podrá ser utilizado"
+                                                     header="Confirmación de eliminación de dispositivo" severity="alert"
+                                                     widgetVar="cd_#{timer.id}" closeOnEscape="true">
+                                        <p:commandButton value="Si" actionListener="#{mantenedorTimersVerListadoMB.eliminar(timer.id)}"
+                                                         oncomplete="cd_#{timer.id}.hide();"/>
+                                        <p:commandButton value="No" onclick="cd_#{timer.id}.hide();" type="button" />
+                                    </p:confirmDialog>
+                                    </h:panelGroup>
+                                </p:column>
+                            </p:dataTable>
                         
                         
                         <f:facet name="footer">
-                            <p:button value="Agregar timer" href="/faces/users/admin/agregarTimer.xhtml" rendered="#{request.isUserInRole('Administrador')}"/>
+                            <p:button value="Agregar timer" href="/faces/users/agregarTimer.xhtml"/>
                         </f:facet>
                     </p:panelGrid>
                 </h:form>

@@ -30,7 +30,8 @@ public interface EscenaFacadeLocal {
 
     int count();
 
-    public void crearEscena(String nombre, Map<Integer, Integer> accionesdispositivos, List<Integer> idUsuariosPermitidos) throws Exception;
+    public void crearEscena(String nombre, Map<Integer, Integer> accionesdispositivos, 
+            List<Integer> idUsuariosPermitidos, String usernameCreador) throws Exception;
 
     public List<Escena> findbyUserNameLogged(String username);
 

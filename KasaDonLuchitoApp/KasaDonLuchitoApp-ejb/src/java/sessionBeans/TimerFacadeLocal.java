@@ -15,6 +15,14 @@ import javax.ejb.Local;
  */
 @Local
 public interface TimerFacadeLocal {
+    
+    public static final int REPETIR_LUNES = 1;
+    public static final int REPETIR_MARTES = 2;
+    public static final int REPETIR_MIERCOLES = 3;
+    public static final int REPETIR_JUEVES = 4;
+    public static final int REPETIR_VIERNES = 5;
+    public static final int REPETIR_SABADO = 6;
+    public static final int REPETIR_DOMINGO = 7;
 
     void create(Timer timer);
 
@@ -30,6 +38,8 @@ public interface TimerFacadeLocal {
 
     int count();
 
-    public void crearTimer(String nombre, Date hora, List<String> dias, boolean accionaEscena, Integer idDispSeleccionado, Integer valorAccionDispositivo, Integer idEscenaSeleccionada) throws Exception;
+    public void crearTimer(String nombre, Date hora, List<Integer> dias,
+            boolean accionaEscena, Integer idDispSeleccionado, Integer valorAccionDispositivo, 
+            Integer idEscenaSeleccionada, String usernameCreador) throws Exception;
     
 }
