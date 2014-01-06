@@ -69,10 +69,7 @@ public class TimerExecutor implements TimerExecutorLocal {
         Logger.getLogger(getClass().getName()).log(Level.INFO, "Todos los timers eliminados");
     }
     
-    @Override
-    public void agregarTimer(Timer t) {
-        
-        timers.add(t);
+    private String getDaysOfWeek(Timer t) {
         StringBuilder dias = new StringBuilder();
         boolean primero = false;
         if (t.isRepetirLunes()) {
@@ -114,20 +111,40 @@ public class TimerExecutor implements TimerExecutorLocal {
                 dias.append(",");
             dias.append("7");
         }
+        return dias.toString().trim();
+    }
+    
+    @Override
+    public void agregarTimer(Timer t) {
+        
+        timers.add(t);
+        
         
         Calendar horaCalendar = Calendar.getInstance();
         horaCalendar.setTime(t.getHora());
         int minuto = horaCalendar.get(Calendar.MINUTE);
         int hora = horaCalendar.get(Calendar.HOUR_OF_DAY);
-        
+
         //Se crea el scheduler
-        
+
         ScheduleExpression schedExpr = new ScheduleExpression();
         schedExpr.minute(minuto);
         schedExpr.hour(hora);
-        schedExpr.dayOfWeek(dias.toString());
         
-        servicioTemporizador.createCalendarTimer(schedExpr, new TimerConfig(t.getId().toString(), true));
+        //Entonces es un timer único, sin repetición por días
+        boolean ejecucionUnica = false;
+        String diasStr = getDaysOfWeek(t);
+        if (diasStr.isEmpty()) {
+            ejecucionUnica = true;
+        }
+        if (ejecucionUnica) {
+            servicioTemporizador.createSingleActionTimer(t.getHora(), new TimerConfig(t.getId().toString(), true));
+            
+        }
+        else {
+            schedExpr.dayOfWeek(diasStr);
+            servicioTemporizador.createCalendarTimer(schedExpr, new TimerConfig(t.getId().toString(), true));
+        }
         Logger.getLogger(getClass().getName()).log(Level.INFO, "Timer agregado con id: {0}", t.getId());
     }
     
@@ -179,6 +196,10 @@ public class TimerExecutor implements TimerExecutorLocal {
     
     
     private void ejecutarTimer(Timer t) {
+        if (getDaysOfWeek(t).isEmpty()) {
+            t.setActivo(false); //Se desactiva luego de ejecutarse
+            timerFacade.edit(t);
+        }
         Logger.getLogger(getClass().getName()).log(Level.INFO, "Ejecutando timer con id: {0}", t.getId());
         try {
             if ((t.getDispositivoQueAcciona() != null) && (t.getValorAccionDispositivo() != null)) {
