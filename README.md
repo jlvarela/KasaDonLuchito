@@ -14,7 +14,6 @@ ejecución.
 
 
 Falta por implementar:
--Mejorar el conversor de rangos entre valorSW y valorHW de los dispositivos
 -Logo
 -Mostrar el estado de la conexión del o los arduino
 -Mantenedor de tipos de dispositivos de nivel de usuario

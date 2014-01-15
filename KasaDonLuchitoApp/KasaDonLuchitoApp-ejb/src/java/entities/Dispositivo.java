@@ -126,9 +126,18 @@ public class Dispositivo implements Serializable {
         int cotaInferiorSW = valoresPosiblesSW.get(0);
         int cotaSuperiorHW = valoresPosiblesHW.get(valoresPosiblesHW.size()-1);
         int cotaInferiorHW = valoresPosiblesHW.get(0);
-        float pendiente = (float)(cotaSuperiorSW - cotaInferiorSW) / (float)(cotaSuperiorHW - cotaInferiorHW);
-        int valorSW = (int)(cotaInferiorSW + pendiente*getValorHW());
-        return valorSW;
+        if (cotaSuperiorSW - cotaInferiorSW <= 0) { //Evita división por 0
+            return 0;
+        }
+        else {
+            float pendiente = (float)(cotaSuperiorSW - cotaInferiorSW) / (float)(cotaSuperiorHW - cotaInferiorHW);
+            int valorSW = Math.round(cotaInferiorSW + pendiente*getValorHW());
+            if (valorSW > cotaSuperiorSW) { //Nunca debiese pasar
+                valorSW = cotaSuperiorSW;
+            }
+            return valorSW;
+        }
+        
     }
 
     /*
@@ -142,9 +151,16 @@ public class Dispositivo implements Serializable {
         int cotaInferiorSW = valoresPosiblesSW.get(0);
         int cotaSuperiorHW = valoresPosiblesHW.get(valoresPosiblesHW.size()-1);
         int cotaInferiorHW = valoresPosiblesHW.get(0);
-        float pendiente = (float)(cotaSuperiorHW - cotaInferiorHW) / (float)(cotaSuperiorSW - cotaInferiorSW);
-        this.valorHW = (int)(cotaInferiorHW + pendiente*valorSW);
-        
+        if (cotaSuperiorSW - cotaInferiorSW <= 0) { //Evita división por 0
+            this.valorHW = 0;
+        }
+        else {
+            float pendiente = (float)(cotaSuperiorHW - cotaInferiorHW) / (float)(cotaSuperiorSW - cotaInferiorSW);
+            this.valorHW = Math.round(cotaInferiorHW + pendiente*valorSW);
+            if (this.valorHW > cotaSuperiorHW) { //Nunca debiese pasar
+                this.valorHW = cotaSuperiorHW;
+            }
+        }
     }
 
     public List<Integer> getPines() {
@@ -176,7 +192,7 @@ public class Dispositivo implements Serializable {
             }
             primero = this.tipo.getTipoDispositivo().getValoresPosibles().get(0);
             ultimo = this.tipo.getTipoDispositivo().getValoresPosibles().get(this.tipo.getTipoDispositivo().getValoresPosibles().size()-1);
-            for(int i = primero; i < ultimo; i++) {
+            for(int i = primero; i <= ultimo; i++) {
                 res.add(new Integer(i));
             }
             return res;
@@ -195,7 +211,7 @@ public class Dispositivo implements Serializable {
             }
             primero = this.tipo.getValoresPosibles().get(0);
             ultimo = this.tipo.getValoresPosibles().get(this.tipo.getValoresPosibles().size()-1);
-            for(int i = primero; i < ultimo; i++) {
+            for(int i = primero; i <= ultimo; i++) {
                 res.add(new Integer(i));
             }
             return res;

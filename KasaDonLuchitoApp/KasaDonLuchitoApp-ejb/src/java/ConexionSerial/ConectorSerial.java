@@ -101,6 +101,9 @@ public class ConectorSerial implements SerialPortEventListener {
         {
             //the method below returns an object of type CommPort
             System.out.println("Intentando abrir puerto");
+            if (selectedPortIdentifier == null) {
+                throw new Exception("El arduino no está conectado");
+            }
             commPort = selectedPortIdentifier.open("TigerControlPanel", TIMEOUT);
             System.out.println("Puerto abierto");
             //the CommPort object can be casted to a SerialPort object
@@ -115,7 +118,7 @@ public class ConectorSerial implements SerialPortEventListener {
                 output = serialPort.getOutputStream();
                 Logger.getLogger(ConectorSerial.class.getName()).log(Level.INFO, null, "Arduino Conectado en "+selectedPort);
             } catch (IOException ex) {
-                Logger.getLogger(ConectorSerial.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(ConectorSerial.class.getName()).log(Level.SEVERE, null, "Error al abrir un puerto serial en "+selectedPort);
             }
             initListener();
             return true;
@@ -126,8 +129,8 @@ public class ConectorSerial implements SerialPortEventListener {
         }
         catch (Exception e)
         {
-            System.out.println("Error al abrir puerto" + selectedPort+ ". "+ e.getMessage());
-            e.printStackTrace();
+            System.out.println("Error al abrir puerto " + selectedPort+ ". Exception: "+ e.getMessage());
+            
         }
         connected = false;
         return false;
