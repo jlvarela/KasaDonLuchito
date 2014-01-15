@@ -6,6 +6,7 @@ package managedBeans.mantenedores;
 
 import entities.Arduino;
 import entities.TipoDispositivo;
+import entities.TipoDispositivoUserLevel;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Scanner;
@@ -19,6 +20,7 @@ import pojos.SelectElemPojo;
 import sessionBeans.ArduinoFacadeLocal;
 import sessionBeans.DispositivoFacadeLocal;
 import sessionBeans.TipoDispositivoFacadeLocal;
+import sessionBeans.TipoDispositivoUserLevelFacadeLocal;
 
 /**
  *
@@ -28,7 +30,7 @@ import sessionBeans.TipoDispositivoFacadeLocal;
 @RequestScoped
 public class MantenedorDispositivoAgregarMB {
     @EJB
-    private TipoDispositivoFacadeLocal tipoDispositivoFacade;
+    private TipoDispositivoUserLevelFacadeLocal tipoDispositivoUserLevelFacade;
     @EJB
     private ArduinoFacadeLocal arduinoFacade;
     @EJB
@@ -56,7 +58,7 @@ public class MantenedorDispositivoAgregarMB {
     @PostConstruct
     public void init() {
         List<Arduino> listaArduinos = arduinoFacade.findAll();
-        List<TipoDispositivo> listaTiposDispositivos = tipoDispositivoFacade.findAll();
+        List<TipoDispositivoUserLevel> listaTiposDispositivos = tipoDispositivoUserLevelFacade.findAll();
         
         SelectElemPojo elemTemp;
         arduinos = new LinkedList<SelectElemPojo>();
@@ -66,7 +68,7 @@ public class MantenedorDispositivoAgregarMB {
         }
         
         tipos_dispositivos = new LinkedList<SelectElemPojo>();
-        for (TipoDispositivo td : listaTiposDispositivos) {
+        for (TipoDispositivoUserLevel td : listaTiposDispositivos) {
             elemTemp = new SelectElemPojo(td.getId().toString(), td.getNombre());
             tipos_dispositivos.add(elemTemp);
         }

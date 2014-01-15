@@ -324,7 +324,7 @@ public class ConectorSerial implements SerialPortEventListener {
             int valorRecibido = (int)bodyMsg[1];
             //LO CORRECTO ES ENVIARLO A UNA COLA O MESSAGE DRIVEN BEAN
             Dispositivo d = dispositivoFacade.findByIdInterno(idSensor);
-            d.setValor(valorRecibido);
+            d.setValorHW(valorRecibido);
             dispositivoFacade.edit(d);
             System.out.println("Ha llegado un mensaje de datos del dispositivo con id: "+idSensor + " con valor: "+valorRecibido);
         }

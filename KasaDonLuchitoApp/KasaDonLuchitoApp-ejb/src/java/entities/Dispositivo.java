@@ -26,14 +26,13 @@ import javax.persistence.Transient;
 @NamedQueries( {
     @NamedQuery(name="Dispositivo.findById", query="SELECT u FROM Dispositivo u WHERE u.id = :id"),
     @NamedQuery(name="Dispositivo.findByIdInterno", query="SELECT u FROM Dispositivo u WHERE u.idInterno = :idInterno"),
-    @NamedQuery(name="Dispositivo.findAllActuators", query="SELECT disp FROM Dispositivo disp WHERE disp.tipo.actuador = TRUE"),
-    @NamedQuery(name="Dispositivo.findOnlyActuatorsByUserNameLogged", query="SELECT disp FROM Usuario u JOIN u.permisoDispositivos perm JOIN perm.dispositivo disp WHERE u.username = :username AND disp.tipo.actuador = TRUE"),
+    @NamedQuery(name="Dispositivo.findAllActuators", query="SELECT disp FROM Dispositivo disp WHERE disp.tipo.tipoDispositivo = TRUE"),
+    @NamedQuery(name="Dispositivo.findOnlyActuatorsByUserNameLogged", query="SELECT disp FROM Usuario u JOIN u.permisoDispositivos perm JOIN perm.dispositivo disp WHERE u.username = :username AND disp.tipo.tipoDispositivo.actuador = TRUE"),
     @NamedQuery(name="Dispositivo.findAll", query="SELECT disp FROM Dispositivo disp"),
     @NamedQuery(name="Dispositivo.findByUserNameLogged", query="SELECT disp FROM Usuario u JOIN u.permisoDispositivos perm JOIN perm.dispositivo disp WHERE u.username = :username")
 
 })
 public class Dispositivo implements Serializable {
-    private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
@@ -50,9 +49,10 @@ public class Dispositivo implements Serializable {
     
     @ManyToOne
     @JoinColumn(nullable = false)
-    private TipoDispositivo tipo;
+    private TipoDispositivoUserLevel tipo;
     
-    private int valor;
+    private int valorHW;
+    
     
     @Transient
     private boolean configurado;
@@ -99,20 +99,52 @@ public class Dispositivo implements Serializable {
         this.arduino = arduino;
     }
 
-    public TipoDispositivo getTipo() {
+    public TipoDispositivoUserLevel getTipo() {
         return tipo;
     }
 
-    public void setTipo(TipoDispositivo tipo) {
+    public void setTipo(TipoDispositivoUserLevel tipo) {
         this.tipo = tipo;
     }
 
-    public int getValor() {
-        return valor;
+    public int getValorHW() {
+        return valorHW;
     }
 
-    public void setValor(int valor) {
-        this.valor = valor;
+    public void setValorHW(int valorHW) {
+        this.valorHW = valorHW;
+    }
+
+    /*
+     * Se realiza una conversión de rangos
+     */
+    public int getValorSW() {
+        List<Integer> valoresPosiblesSW = tipo.getValoresPosibles();
+        List<Integer> valoresPosiblesHW = tipo.getTipoDispositivo().getValoresPosibles();
+        
+        int cotaSuperiorSW = valoresPosiblesSW.get(valoresPosiblesSW.size()-1);
+        int cotaInferiorSW = valoresPosiblesSW.get(0);
+        int cotaSuperiorHW = valoresPosiblesHW.get(valoresPosiblesHW.size()-1);
+        int cotaInferiorHW = valoresPosiblesHW.get(0);
+        float pendiente = (float)(cotaSuperiorSW - cotaInferiorSW) / (float)(cotaSuperiorHW - cotaInferiorHW);
+        int valorSW = (int)(cotaInferiorSW + pendiente*getValorHW());
+        return valorSW;
+    }
+
+    /*
+     * Se realiza una conversión de rangos
+     */
+    public void setValorSW(int valorSW) {
+        List<Integer> valoresPosiblesSW = tipo.getValoresPosibles();
+        List<Integer> valoresPosiblesHW = tipo.getTipoDispositivo().getValoresPosibles();
+        
+        int cotaSuperiorSW = valoresPosiblesSW.get(valoresPosiblesSW.size()-1);
+        int cotaInferiorSW = valoresPosiblesSW.get(0);
+        int cotaSuperiorHW = valoresPosiblesHW.get(valoresPosiblesHW.size()-1);
+        int cotaInferiorHW = valoresPosiblesHW.get(0);
+        float pendiente = (float)(cotaSuperiorHW - cotaInferiorHW) / (float)(cotaSuperiorSW - cotaInferiorSW);
+        this.valorHW = (int)(cotaInferiorHW + pendiente*valorSW);
+        
     }
 
     public List<Integer> getPines() {
@@ -132,10 +164,29 @@ public class Dispositivo implements Serializable {
     }
     
     public boolean isActuador() {
-        return this.tipo.isActuador();
+        return this.tipo.getTipoDispositivo().isActuador();
     }
     
-    public List<Integer> getValoresPosibles() {
+    public List<Integer> getValoresPosiblesHW() {
+        if (this.tipo.isRangoValores()) {
+            LinkedList<Integer> res = new LinkedList<Integer>();
+            Integer primero, ultimo;
+            if (this.tipo.getValoresPosibles().isEmpty()) {
+                return res;
+            }
+            primero = this.tipo.getTipoDispositivo().getValoresPosibles().get(0);
+            ultimo = this.tipo.getTipoDispositivo().getValoresPosibles().get(this.tipo.getTipoDispositivo().getValoresPosibles().size()-1);
+            for(int i = primero; i < ultimo; i++) {
+                res.add(new Integer(i));
+            }
+            return res;
+        }
+        else {
+            return this.tipo.getTipoDispositivo().getValoresPosibles();
+        }
+    }
+    
+    public List<Integer> getValoresPosiblesSW() {
         if (this.tipo.isRangoValores()) {
             LinkedList<Integer> res = new LinkedList<Integer>();
             Integer primero, ultimo;
@@ -152,6 +203,14 @@ public class Dispositivo implements Serializable {
         else {
             return this.tipo.getValoresPosibles();
         }
+    }
+    
+    public boolean isConfigurado() {
+        return configurado;
+    }
+
+    public void setConfigurado(boolean configurado) {
+        this.configurado = configurado;
     }
 
     @Override
@@ -178,13 +237,4 @@ public class Dispositivo implements Serializable {
     public String toString() {
         return "entities.Dispositivo[ id=" + id + " ]";
     }
-
-    public boolean isConfigurado() {
-        return configurado;
-    }
-
-    public void setConfigurado(boolean configurado) {
-        this.configurado = configurado;
-    }
-    
 }

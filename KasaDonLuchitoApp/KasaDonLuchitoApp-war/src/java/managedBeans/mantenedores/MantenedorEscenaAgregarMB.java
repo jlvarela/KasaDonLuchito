@@ -198,7 +198,7 @@ public class MantenedorEscenaAgregarMB implements Serializable{
     
     public void cargarValores() {
         Integer idDisp = idDispSeleccionado;
-        List<Integer> listaValores = dispositivoFacade.getValoresDispositivo(idDisp);
+        List<Integer> listaValores = dispositivoFacade.getValoresDispositivoSW(idDisp);
         SelectElemPojo elemTemp;
         valores.clear();
         for(Integer valor : listaValores) {

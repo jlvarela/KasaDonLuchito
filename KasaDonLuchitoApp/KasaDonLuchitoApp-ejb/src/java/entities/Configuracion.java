@@ -22,7 +22,6 @@ import javax.persistence.NamedQuery;
     @NamedQuery(name="Configuracion.findByNombre", query="SELECT u.valor FROM Configuracion u WHERE u.nombre = :nombre"),
 })
 public class Configuracion implements Serializable {
-    private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;

@@ -7,6 +7,7 @@ package sessionBeans;
 import entities.Arduino;
 import entities.Dispositivo;
 import entities.TipoDispositivo;
+import entities.TipoDispositivoUserLevel;
 import java.util.LinkedList;
 import java.util.List;
 import javax.ejb.EJB;
@@ -26,7 +27,7 @@ public class DispositivoFacade extends AbstractFacade<Dispositivo> implements Di
     @EJB
     private UsuarioFacadeLocal usuarioFacade;
     @EJB
-    private TipoDispositivoFacadeLocal tipoDispositivoFacade;
+    private TipoDispositivoUserLevelFacadeLocal tipoDispositivoUserLevelFacade;
     @EJB
     private ArduinoFacadeLocal arduinoFacade;
     @EJB
@@ -96,10 +97,10 @@ public class DispositivoFacade extends AbstractFacade<Dispositivo> implements Di
     
     @Override
     public void agregarDispositivo(String nombre, Integer idInterno, 
-            Integer id_tipo_dispositivo, Integer id_arduino, 
+            Integer id_tipo_dispositivo_userLevel, Integer id_arduino, 
             List<Integer> lista_pines, List<Integer> lista_configs) throws Exception {
         Arduino a = arduinoFacade.find(id_arduino);
-        TipoDispositivo td = tipoDispositivoFacade.find(id_tipo_dispositivo);
+        TipoDispositivoUserLevel td = tipoDispositivoUserLevelFacade.find(id_tipo_dispositivo_userLevel);
         Dispositivo d = new Dispositivo();
         d.setNombre(nombre);
         d.setIdInterno(idInterno);
@@ -108,19 +109,28 @@ public class DispositivoFacade extends AbstractFacade<Dispositivo> implements Di
         d.setTipo(td);
         d.setConfiguraciones(lista_configs);
         d.setPines(lista_pines);
-        d.setValor(0);
+        d.setValorSW(0);
         
         create(d);
         conectionArduino.consultar(d);
     }
     
     @Override
-    public List<Integer> getValoresDispositivo(Integer id) {
+    public List<Integer> getValoresDispositivoHW(Integer id) {
         Dispositivo disp;
         if (id == null)
             return new LinkedList<Integer>();
         disp = find(id);
-        return disp.getValoresPosibles();
+        return disp.getValoresPosiblesHW();
+    }
+    
+    @Override
+    public List<Integer> getValoresDispositivoSW(Integer id) {
+        Dispositivo disp;
+        if (id == null)
+            return new LinkedList<Integer>();
+        disp = find(id);
+        return disp.getValoresPosiblesSW();
     }
     
     @Override
@@ -136,12 +146,13 @@ public class DispositivoFacade extends AbstractFacade<Dispositivo> implements Di
         catch (NoResultException nre) {
             return;
         }
-        conectionArduino.accionar(disp, valor);
         actualizarDB(disp, valor);
+        conectionArduino.accionar(disp, disp.getValorHW());
+        
     }
     
     private void actualizarDB(Dispositivo disp, int valor) {
-        disp.setValor(valor);
+        disp.setValorSW(valor);
         edit(disp);
     }
     

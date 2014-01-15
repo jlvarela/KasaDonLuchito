@@ -35,10 +35,12 @@ public interface DispositivoFacadeLocal {
 
     public Dispositivo findByIdInterno(Integer idInterno);
 
-    public List<Integer> getValoresDispositivo(Integer id);
-
     public List<Dispositivo> findOnlyActuatorsByUserNameLogged(String username);
 
     public List<Dispositivo> findByUserNameLogged(String username);
+
+    public List<Integer> getValoresDispositivoSW(Integer id);
+
+    public List<Integer> getValoresDispositivoHW(Integer id);
     
 }

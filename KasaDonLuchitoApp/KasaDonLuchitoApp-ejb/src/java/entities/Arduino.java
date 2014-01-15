@@ -26,7 +26,6 @@ import javax.persistence.OneToMany;
     @NamedQuery(name="Arduino.portInUse", query="SELECT u.puertoCOM FROM Arduino u WHERE u.puertoCOM = :port"),
 })
 public class Arduino implements Serializable {
-    private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;

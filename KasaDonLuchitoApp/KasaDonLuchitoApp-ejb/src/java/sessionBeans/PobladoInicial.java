@@ -9,6 +9,7 @@ import entities.Configuracion;
 import entities.Dispositivo;
 import entities.Timer;
 import entities.TipoDispositivo;
+import entities.TipoDispositivoUserLevel;
 import entities.TipoUsuario;
 import entities.Usuario;
 import java.math.BigInteger;
@@ -21,6 +22,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
@@ -36,7 +39,8 @@ public class PobladoInicial implements PobladoInicialLocal {
     private EntityManager em;
     
     private List<TipoUsuario> tiposDeUsuarios;
-    private List<TipoDispositivo> tiposDeDispositivos;
+    private List<TipoDispositivo> tiposDeDispositivosHardware;
+    private List<TipoDispositivoUserLevel> tiposDeDispositivosUserLevel;
     private List<Dispositivo> dispositivos;
 
     @Override
@@ -46,7 +50,8 @@ public class PobladoInicial implements PobladoInicialLocal {
     
     @Override
     public void poblarDBProduction() {
-        genererarTiposDispositivos();
+        genererarTiposDispositivosHardware();
+        generarTiposDispositivosUserLevel();
         generarTiposUsuarios();
         
         Arduino arduino = new Arduino();
@@ -58,8 +63,8 @@ public class PobladoInicial implements PobladoInicialLocal {
         arduino.getDispositivos().add(d1);
         d1.setNombre("Luz pin13");
         d1.setIdInterno(1);
-        d1.setValor(0);
-        d1.setTipo(tiposDeDispositivos.get(4));
+        d1.setTipo(tiposDeDispositivosUserLevel.get(4));
+        d1.setValorSW(0);
         d1.getPines().add(new Integer(13));
         
         Dispositivo d2 = new Dispositivo();
@@ -67,8 +72,8 @@ public class PobladoInicial implements PobladoInicialLocal {
         arduino.getDispositivos().add(d2);
         d2.setNombre("Luz dimmer pin9");
         d2.setIdInterno(2);
-        d2.setValor(0);
-        d2.setTipo(tiposDeDispositivos.get(5));
+        d2.setTipo(tiposDeDispositivosUserLevel.get(5));
+        d2.setValorSW(0);
         d2.getPines().add(new Integer(9));
         
         dispositivos = new LinkedList<Dispositivo>();
@@ -130,8 +135,9 @@ public class PobladoInicial implements PobladoInicialLocal {
         return password;
     }
     
-    public List<TipoDispositivo> genererarTiposDispositivos() {
-        tiposDeDispositivos = new LinkedList<TipoDispositivo>();
+    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+    public List<TipoDispositivo> genererarTiposDispositivosHardware() {
+        tiposDeDispositivosHardware = new LinkedList<TipoDispositivo>();
         TipoDispositivo td = new TipoDispositivo();
         td.setId(1);
         td.setNombre("Sensor on/off digital");
@@ -139,7 +145,7 @@ public class PobladoInicial implements PobladoInicialLocal {
         td.getValoresPosibles().add(0);
         td.getValoresPosibles().add(1);
         td.setRangoValores(false);
-        tiposDeDispositivos.add(td);
+        tiposDeDispositivosHardware.add(td);
         persist(td);
         
         td = new TipoDispositivo();
@@ -149,7 +155,7 @@ public class PobladoInicial implements PobladoInicialLocal {
         td.getValoresPosibles().add(0);
         td.getValoresPosibles().add(255);
         td.setRangoValores(true);
-        tiposDeDispositivos.add(td);
+        tiposDeDispositivosHardware.add(td);
         persist(td);
         
         td = new TipoDispositivo();
@@ -159,7 +165,7 @@ public class PobladoInicial implements PobladoInicialLocal {
         td.getValoresPosibles().add(0);
         td.getValoresPosibles().add(1);
         td.setRangoValores(false);
-        tiposDeDispositivos.add(td);
+        tiposDeDispositivosHardware.add(td);
         persist(td);
         
         td = new TipoDispositivo();
@@ -169,7 +175,7 @@ public class PobladoInicial implements PobladoInicialLocal {
         td.getValoresPosibles().add(0);
         td.getValoresPosibles().add(255);
         td.setRangoValores(true);
-        tiposDeDispositivos.add(td);
+        tiposDeDispositivosHardware.add(td);
         persist(td);
         
         td = new TipoDispositivo();
@@ -179,7 +185,7 @@ public class PobladoInicial implements PobladoInicialLocal {
         td.getValoresPosibles().add(0);
         td.getValoresPosibles().add(1);
         td.setRangoValores(false);
-        tiposDeDispositivos.add(td);
+        tiposDeDispositivosHardware.add(td);
         persist(td);
         
         td = new TipoDispositivo();
@@ -189,12 +195,79 @@ public class PobladoInicial implements PobladoInicialLocal {
         td.getValoresPosibles().add(0);
         td.getValoresPosibles().add(255);
         td.setRangoValores(true);
-        tiposDeDispositivos.add(td);
+        tiposDeDispositivosHardware.add(td);
         persist(td);
         
-        return tiposDeDispositivos;
+        return tiposDeDispositivosHardware;
     }
     
+    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+    public List<TipoDispositivoUserLevel> generarTiposDispositivosUserLevel() {
+        tiposDeDispositivosUserLevel = new LinkedList<TipoDispositivoUserLevel>();
+        TipoDispositivoUserLevel td = new TipoDispositivoUserLevel();
+        td.setNombre("Sensor on/off digital");
+        td.setTipoDispositivo(tiposDeDispositivosHardware.get(0));
+        td.setUnidad("");
+        td.getValoresPosibles().add(0);
+        td.getValoresPosibles().add(1);
+        td.setRangoValores(false);
+        tiposDeDispositivosUserLevel.add(td);
+        persist(td);
+        
+        td = new TipoDispositivoUserLevel();
+        td.setNombre("Sensor de temperatura");
+        td.setTipoDispositivo(tiposDeDispositivosHardware.get(1));
+        td.getValoresPosibles().add(10);
+        td.getValoresPosibles().add(50);
+        td.setUnidad("°C");
+        td.setRangoValores(true);
+        tiposDeDispositivosUserLevel.add(td);
+        persist(td);
+        
+        td = new TipoDispositivoUserLevel();
+        td.setNombre("Sensor de proximidad infrarojo");
+        td.setTipoDispositivo(tiposDeDispositivosHardware.get(2)); //Sensor análogo digitalizado
+        td.getValoresPosibles().add(0);
+        td.getValoresPosibles().add(1);
+        td.setUnidad("");
+        td.setRangoValores(false);
+        tiposDeDispositivosUserLevel.add(td);
+        persist(td);
+        
+        td = new TipoDispositivoUserLevel();
+        td.setNombre("Sensor proximidad ultrasonido HR-S04");
+        td.setTipoDispositivo(tiposDeDispositivosHardware.get(3));
+        td.getValoresPosibles().add(0);
+        td.getValoresPosibles().add(255);
+        td.setUnidad("CM");
+        td.setRangoValores(true);
+        tiposDeDispositivosUserLevel.add(td);
+        persist(td);
+        
+        td = new TipoDispositivoUserLevel();
+        td.setNombre("Actuador on/off");
+        td.setTipoDispositivo(tiposDeDispositivosHardware.get(4));
+        td.getValoresPosibles().add(0);
+        td.getValoresPosibles().add(1);
+        td.setUnidad("");
+        td.setRangoValores(false);
+        tiposDeDispositivosUserLevel.add(td);
+        persist(td);
+        
+        td = new TipoDispositivoUserLevel();
+        td.setNombre("Actuador dimmer");
+        td.setTipoDispositivo(tiposDeDispositivosHardware.get(5));
+        td.getValoresPosibles().add(0);
+        td.getValoresPosibles().add(10);
+        td.setUnidad("");
+        td.setRangoValores(true);
+        tiposDeDispositivosUserLevel.add(td);
+        persist(td);
+        
+        return tiposDeDispositivosUserLevel;
+    }
+    
+    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     public List<TipoUsuario> generarTiposUsuarios() {
         tiposDeUsuarios = new LinkedList<TipoUsuario>();
         TipoUsuario tu = new TipoUsuario();

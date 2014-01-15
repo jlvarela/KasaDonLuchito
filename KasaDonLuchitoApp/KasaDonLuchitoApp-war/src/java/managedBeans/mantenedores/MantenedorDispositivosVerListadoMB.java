@@ -56,11 +56,12 @@ public class MantenedorDispositivosVerListadoMB {
             dispPojoTemp.setId(t.getId());
             dispPojoTemp.setIdInterno(t.getIdInterno());
             dispPojoTemp.setNombre(t.getNombre());
-            for(Integer valorPosible : t.getValoresPosibles()) {
+            dispPojoTemp.setUnidad(t.getTipo().getUnidad());
+            for(Integer valorPosible : t.getValoresPosiblesSW()) {
                 dispPojoTemp.getValoresPosibles().add(valorPosible);
             }
             dispPojoTemp.setActuador(t.isActuador());
-            dispPojoTemp.setValor(t.getValor());
+            dispPojoTemp.setValor(t.getValorSW());
             lista.add(dispPojoTemp);
             listaBusqueda.add(dispPojoTemp);
         }

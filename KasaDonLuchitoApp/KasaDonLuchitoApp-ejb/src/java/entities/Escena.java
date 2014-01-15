@@ -30,7 +30,6 @@ import javax.persistence.OneToMany;
     @NamedQuery(name="Escena.findbyUserNameLogged", query="SELECT e FROM Escena e JOIN e.usuariosPermitidos u WHERE u.username = :username")
 })
 public class Escena implements Serializable {
-    private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;

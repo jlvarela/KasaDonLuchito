@@ -37,7 +37,7 @@
                             </p:column>
                             <p:column headerText="Valor" width="100px;">
                                 <h:inputHidden id="inputValor" value="#{disp.valor}" rendered="#{disp.actuador}"/>
-                                <h:outputText id="outputValor" value="#{disp.valor}"/>
+                                <h:outputText id="outputValor" value="#{disp.valor}#{disp.unidad}"/>
                                 <p:slider display="outputValor" for="inputValor" minValue="#{disp.minimoValorPosible}" maxValue="#{disp.maximoValorPosible}" rendered="#{disp.actuador}">
                                     <f:param name="id" value="#{disp.id}" />
                                     <p:ajax event="slideEnd" listener="#{mantenedorDispositivosVerListadoMB.cambioDispositivo}">

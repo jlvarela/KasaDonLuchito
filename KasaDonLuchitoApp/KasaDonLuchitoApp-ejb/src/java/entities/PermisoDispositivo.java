@@ -18,7 +18,6 @@ import javax.persistence.ManyToOne;
  */
 @Entity
 public class PermisoDispositivo implements Serializable {
-    private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;

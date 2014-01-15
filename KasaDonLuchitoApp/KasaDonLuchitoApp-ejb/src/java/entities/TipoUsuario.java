@@ -16,7 +16,6 @@ import javax.persistence.Id;
 public class TipoUsuario implements Serializable {
     public static final String ADMINISTRADOR = "Administrador";
     public static final String USUARIO = "Usuario";
-    private static final long serialVersionUID = 1L;
     @Id
     private String nombreTipo; //ENUMERACION
 

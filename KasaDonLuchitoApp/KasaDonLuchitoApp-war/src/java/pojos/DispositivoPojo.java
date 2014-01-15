@@ -22,6 +22,8 @@ public class DispositivoPojo {
     
     private boolean actuador;
     
+    private String unidad;
+    
     private int valor;
 
     public DispositivoPojo() {
@@ -70,6 +72,14 @@ public class DispositivoPojo {
     
     public boolean isSensor() {
         return !actuador;
+    }
+
+    public String getUnidad() {
+        return unidad;
+    }
+
+    public void setUnidad(String unidad) {
+        this.unidad = unidad;
     }
     
     public void setSensor(boolean sensor) {

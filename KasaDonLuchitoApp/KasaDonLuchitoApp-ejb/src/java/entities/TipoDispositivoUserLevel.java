@@ -9,22 +9,29 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 
 /**
  *
  * @author victor
  */
 @Entity
-public class TipoDispositivo implements Serializable {
+public class TipoDispositivoUserLevel implements Serializable {
     @Id
-    private Integer id; //ENUMERACION
-    
-    @Column(nullable = false, unique = true)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
+
     private String nombre;
     
-    @Column(nullable = false)
-    private boolean actuador;
+    @ManyToOne
+    @JoinColumn(nullable = false)
+    private TipoDispositivo tipoDispositivo;
+    
+    private String unidad;
     
     @Column(nullable = false)
     private List<Integer> valoresPosibles;
@@ -32,7 +39,7 @@ public class TipoDispositivo implements Serializable {
     @Column(nullable = false)
     private boolean rangoValores;
 
-    public TipoDispositivo() {
+    public TipoDispositivoUserLevel() {
         valoresPosibles = new ArrayList<Integer>();
     }
 
@@ -52,22 +59,6 @@ public class TipoDispositivo implements Serializable {
         this.nombre = nombre;
     }
     
-    public boolean isActuador() {
-        return actuador;
-    }
-
-    public void setActuador(boolean actuador) {
-        this.actuador = actuador;
-    }
-    
-    public boolean isSensor() {
-        return !actuador;
-    }
-    
-    public void setSensor(boolean sensor) {
-        this.actuador = !sensor;
-    }
-
     public List<Integer> getValoresPosibles() {
         return valoresPosibles;
     }
@@ -83,7 +74,23 @@ public class TipoDispositivo implements Serializable {
     public void setRangoValores(boolean rangoValores) {
         this.rangoValores = rangoValores;
     }
-    
+
+    public TipoDispositivo getTipoDispositivo() {
+        return tipoDispositivo;
+    }
+
+    public void setTipoDispositivo(TipoDispositivo tipoDispositivo) {
+        this.tipoDispositivo = tipoDispositivo;
+    }
+
+    public String getUnidad() {
+        return unidad;
+    }
+
+    public void setUnidad(String unidad) {
+        this.unidad = unidad;
+    }
+
     @Override
     public int hashCode() {
         int hash = 0;
@@ -94,10 +101,10 @@ public class TipoDispositivo implements Serializable {
     @Override
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof TipoDispositivo)) {
+        if (!(object instanceof TipoDispositivoUserLevel)) {
             return false;
         }
-        TipoDispositivo other = (TipoDispositivo) object;
+        TipoDispositivoUserLevel other = (TipoDispositivoUserLevel) object;
         if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
             return false;
         }
@@ -106,7 +113,7 @@ public class TipoDispositivo implements Serializable {
 
     @Override
     public String toString() {
-        return "entities.TipoDispositivo[ id=" + id + " ]";
+        return "entities.TipoDispositivoUserLevel[ id=" + id + " ]";
     }
     
 }

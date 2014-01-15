@@ -25,7 +25,6 @@ public class CondicionDisparador implements Serializable {
     public static final String MAYOR_O_IGUAL_QUE = ">=";
     public static final String DISTINTO_QUE = "!=";
     
-    private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
