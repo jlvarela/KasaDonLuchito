@@ -6,7 +6,6 @@ package sessionBeans;
 
 import entities.Arduino;
 import entities.Dispositivo;
-import entities.TipoDispositivo;
 import entities.TipoDispositivoUserLevel;
 import java.util.LinkedList;
 import java.util.List;

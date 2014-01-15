@@ -5,7 +5,6 @@
 package managedBeans.mantenedores;
 
 import entities.Arduino;
-import entities.TipoDispositivo;
 import entities.TipoDispositivoUserLevel;
 import java.util.LinkedList;
 import java.util.List;
@@ -19,7 +18,6 @@ import otros.CommonFunctions;
 import pojos.SelectElemPojo;
 import sessionBeans.ArduinoFacadeLocal;
 import sessionBeans.DispositivoFacadeLocal;
-import sessionBeans.TipoDispositivoFacadeLocal;
 import sessionBeans.TipoDispositivoUserLevelFacadeLocal;
 
 /**

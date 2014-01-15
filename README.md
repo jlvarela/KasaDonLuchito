@@ -14,9 +14,10 @@ ejecución.
 
 
 Falta por implementar:
--Capa de abstracción entre dispositivos desde el punto de vista de Arduino y desde el punto de vista del usuario, esto incluye conversión de rangos de datos leídos, unidades de medición, nombre de dispositivo a nivel de usuario (Se pretende implementar mediante una herencia de la clase "tipo_dispositivo").
--Disparadores: Método configurable por el usuario para realizar ciertas acciones al cumplirse ciertas condiciones en los dispositivos (sean sensores y/o actuadores).
--Cambio de contraseña y nombre de usuario.
+-Mejorar el conversor de rangos entre valorSW y valorHW de los dispositivos
 -Logo
+-Mostrar el estado de la conexión del o los arduino
+-Mantenedor de tipos de dispositivos de nivel de usuario
 -Cambio de configuraciones del sistema relacionadas con el logo, fondo de pantalla y nombre de la app.
+-Disparadores: Método configurable por el usuario para realizar ciertas acciones al cumplirse ciertas condiciones en los dispositivos (sean sensores y/o actuadores).
 -Gráficos y medición del estado de los dispositivos en historial.
