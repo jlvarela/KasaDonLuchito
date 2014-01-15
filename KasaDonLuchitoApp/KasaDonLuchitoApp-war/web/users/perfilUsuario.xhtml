@@ -24,7 +24,26 @@
                     <p:panelGrid columns="2" styleClass="centrar">
                     <f:facet name="header">Perfil de usuario</f:facet>
 
+                        <p:outputLabel value="Nombre de usuario" for="username"/>
+                        <p:inputText id="username" value="#{mantenedorPerfilUsuarioMB.username}" required="true">
+                        </p:inputText>
+
+                        <p:outputLabel value="Contraseña actual" for="pass_actual"/>
+                        <p:inputText id="pass_actual" type="password" value="#{mantenedorPerfilUsuarioMB.password}" required="true">
+                        </p:inputText>
+
+                        <p:outputLabel value="Contraseña nueva" for="pass_new"/>
+                        <p:inputText id="pass_new" type="password"  value="#{mantenedorPerfilUsuarioMB.passwordNew}">
+                        </p:inputText>
+
+                        <p:outputLabel value="Repetir Contraseña nueva" for="pass_new2"/>
+                        <p:inputText id="pass_new2" type="password"  value="#{mantenedorPerfilUsuarioMB.passwordNew2}">
+                        </p:inputText>
                         
+                        <f:facet name="footer">
+                            <p:commandButton value="Actualizar datos" ajax="false" action="#{mantenedorPerfilUsuarioMB.actualizarDatos()}"/>
+                            <p:commandButton value="Volver" immediate="true" action="#{mantenedorPerfilUsuarioMB.volverToLista()}"/>
+                        </f:facet>
                     </p:panelGrid>
                 </h:form>
             </ui:define>

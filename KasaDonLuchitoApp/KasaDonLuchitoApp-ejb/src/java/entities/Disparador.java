@@ -38,6 +38,8 @@ public class Disparador implements Serializable {
     @ManyToOne
     private Dispositivo dispositivoQueAcciona;
     
+    private Integer valorAccionDispositivo;
+    
     @ManyToOne
     private Escena escenaQueAcciona;
 
@@ -79,6 +81,14 @@ public class Disparador implements Serializable {
 
     public Dispositivo getDispositivoQueAcciona() {
         return dispositivoQueAcciona;
+    }
+
+    public Integer getValorAccionDispositivo() {
+        return valorAccionDispositivo;
+    }
+
+    public void setValorAccionDispositivo(Integer valorAccionDispositivo) {
+        this.valorAccionDispositivo = valorAccionDispositivo;
     }
 
     public void setDispositivoQueAcciona(Dispositivo dispositivoQueAcciona) {

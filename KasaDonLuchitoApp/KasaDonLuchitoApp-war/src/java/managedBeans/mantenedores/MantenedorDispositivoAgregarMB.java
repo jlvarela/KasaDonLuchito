@@ -106,7 +106,7 @@ public class MantenedorDispositivoAgregarMB {
     }
     
     public void volverToLista() {
-        CommonFunctions.goToPage("/faces/users/admin/verArduinos.xhtml?faces-redirect=true");
+        CommonFunctions.goToPage("/faces/users/manipularDispositivos.xhtml?faces-redirect=true");
     }
     
     

@@ -27,4 +27,10 @@ public class DisparadorFacade extends AbstractFacade<Disparador> implements Disp
         super(Disparador.class);
     }
     
+    @Override
+    public void eliminarDisparador(Disparador t) {
+        //disparadorExecutor.eliminarDisparador(t);
+        remove(t);
+    }
+    
 }

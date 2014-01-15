@@ -28,5 +28,7 @@ public interface DisparadorFacadeLocal {
     List<Disparador> findRange(int[] range);
 
     int count();
+
+    public void eliminarDisparador(Disparador t);
     
 }

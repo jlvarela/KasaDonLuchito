@@ -139,6 +139,33 @@ public class UsuarioFacade extends AbstractFacade<Usuario> implements UsuarioFac
         
     }
     
+    @Override
+    public boolean changeUsernameAndPassword(String oldUsername, String username, String password, String passwordNew) throws Exception {
+        Usuario u = this.findByUsername(oldUsername);
+        if (u == null) {
+            throw new Exception("El usuario no existe, reinicie su sesión");
+        }
+        boolean resultado = true;
+        if (oldUsername.equals(username)) {
+            resultado = false;
+        }
+        else if (this.findByUsername(username) != null) {
+            throw new Exception("El nuevo nombre de usuario ingresado ya existe, utilice otro nombre de usuario");
+        }
+        
+        if (!u.getPassword().equals(getMd5(password))) {
+            throw new Exception("La contraseña actual introducida no es correcta");
+        }
+        
+        u.setUsername(username);
+        if (!passwordNew.trim().isEmpty()) {
+            u.setPassword(getMd5(passwordNew));
+        }        
+        getEntityManager().merge(u);
+        
+        return resultado;
+    }
+    
     public String getMd5(String password) {
         
         try {

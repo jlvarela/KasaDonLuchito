@@ -36,5 +36,7 @@ public interface UsuarioFacadeLocal {
     public boolean isAdministrador(String username);
 
     public Usuario findByUsername(String username);
+
+    public boolean changeUsernameAndPassword(String oldUsername, String username, String password, String passwordNew) throws Exception;
     
 }

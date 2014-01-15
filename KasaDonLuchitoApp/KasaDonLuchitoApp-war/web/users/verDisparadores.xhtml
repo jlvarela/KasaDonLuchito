@@ -23,8 +23,51 @@
                 <h:form>
                     <p:panelGrid columns="2" styleClass="centrar">
                     <f:facet name="header">Ver disparadores</f:facet>
+                        <p:dataTable value="#{mantenedorDisparadoresVerListadoMB.lista}" var="disparador" 
+                                        emptyMessage="No hay disparadores registrados en el sistema" 
+                                        filteredValue="#{mantenedorDisparadoresVerListadoMB.listaBusqueda}">
+                                <p:column headerText="Nombre" sortBy="#{disparador.nombre}" filterMatchMode="contains" filterBy="#{disparador.nombre}">
+                                    <h:outputText value="#{disparador.nombre}"/>
+                                </p:column>
+                                <p:column headerText="Acción a realizar">
+                                   <h:outputText value="#{disparador.accionARealizar}"/>
+                                </p:column>
+                                <p:column headerText="Cantidad condiciones">
+                                   <h:outputText value="#{disparador.cantCondiciones}"/>
+                                </p:column>
+                                <p:column headerText="Activado" >
+                                    <p:selectBooleanCheckbox value="#{disparador.activado}" disabled="true"/>
+                                </p:column>
+                                
+                                <p:column headerText="">
+                                    <p:commandLink value="  " styleClass=" ui-btn ui-icon-shadow ui-icon-search ui-icon" action="#{mantenedorDisparadoresVerListadoMB.detalles(disparador.id)}">
+                                    </p:commandLink>
+                                </p:column>
+                                <p:column headerText="">
+                                    <h:panelGroup rendered="#{disparador.esCreador}">
+                                    <p:commandLink value="  " styleClass=" ui-btn ui-icon-shadow ui-icon-pencil ui-icon" action="#{mantenedorDisparadoresVerListadoMB.editar(disparador.id)}">
+                                    </p:commandLink>
+                                    </h:panelGroup>
+                                </p:column>
+                                <p:column headerText="">
+                                    <h:panelGroup rendered="#{disparador.esCreador}">
+                                    <p:commandLink value="  " styleClass=" ui-btn ui-icon-shadow ui-icon-trash ui-icon" onclick="cd_#{disparador.id}.show();" />
 
+                                    <p:confirmDialog message="¿Está seguro que desea eliminar el disparador?"
+                                                     header="Confirmación de eliminación de disparador" severity="alert"
+                                                     widgetVar="cd_#{disparador.id}" closeOnEscape="true">
+                                        <p:commandButton value="Si" actionListener="#{mantenedorDisparadoresVerListadoMB.eliminar(disparador.id)}"
+                                                         oncomplete="cd_#{disparador.id}.hide();"/>
+                                        <p:commandButton value="No" onclick="cd_#{disparador.id}.hide();" type="button" />
+                                    </p:confirmDialog>
+                                    </h:panelGroup>
+                                </p:column>
+                            </p:dataTable>
                         
+                        
+                        <f:facet name="footer">
+                            <p:button value="Agregar disparador" href="/faces/users/admin/agregarDisparador.xhtml"/>
+                        </f:facet>
                     </p:panelGrid>
                 </h:form>
             </ui:define>
