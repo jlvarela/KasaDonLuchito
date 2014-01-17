@@ -37,7 +37,7 @@ public class ConfiguracionesMB {
     public String getLogo() {
         String res = configuracionFacade.findByName("logo_app");
         if (res == null) {
-            res = "logo.jpg";
+            res = "garka.png";
         }
         return res;
     }
