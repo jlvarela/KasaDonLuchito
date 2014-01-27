@@ -45,6 +45,16 @@ public class DispositivoFacade extends AbstractFacade<Dispositivo> implements Di
     }
     
     @Override
+    public void remove(Dispositivo dispositivo) {
+        //Lo elimino desde el arduino
+        conectionArduino.eliminar(dispositivo);
+        
+        dispositivo.getArduino().getDispositivos().remove(dispositivo);
+        getEntityManager().remove(getEntityManager().merge(dispositivo));
+        getEntityManager().merge(dispositivo.getArduino());
+    }
+    
+    @Override
     public List<Dispositivo> findOnlyActuatorsByUserNameLogged(String username) {
         Query q;
         if (usuarioFacade.isAdministrador(username)) {

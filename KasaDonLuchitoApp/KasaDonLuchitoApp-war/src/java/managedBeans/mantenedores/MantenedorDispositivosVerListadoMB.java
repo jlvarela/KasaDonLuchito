@@ -93,8 +93,7 @@ public class MantenedorDispositivosVerListadoMB {
             }
             else {
                 //MOSTRAR ERROR
-                this.mantDispositivoConv.limpiarDatos();
-                CommonFunctions.goToIndex();
+                
             }
         }
         catch (Exception e) {

@@ -56,7 +56,9 @@ public class Login {
     
     public void login() {
         if(autenticador.login(username, password)) {
-            CommonFunctions.goToPage(originalURL);
+            String originalURLTemp = originalURL;
+            autenticador.setOriginalURL("/faces/users/manipularDispositivos.xhtml");
+            CommonFunctions.goToPage(originalURLTemp);
         }
         
     }

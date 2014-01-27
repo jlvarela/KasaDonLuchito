@@ -50,6 +50,25 @@ public class ConectionArduino implements ConectionArduinoLocal {
     }
     
     @Override
+    public void eliminar(Dispositivo disp) {
+        ConectorSerial conexionArduino;
+        conexionArduino = getConexionArduino(disp.getArduino().getId());
+        
+        if (conexionArduino != null) {
+            if (conexionArduino.isConnected()) {
+                byte idDispInterno = (byte)disp.getIdInterno().intValue();
+                byte[] datosRes = {ConectorSerial.TIPO_MSG_ELIMINAR_DISPOSITIVO, 1, idDispInterno};
+                System.out.println("Enviando mensaje de eliminación de dispositivo");
+                conexionArduino.sendMessage(datosRes);
+            }
+            else {
+                conexionesArduinos.remove(conexionArduino);
+                Logger.getLogger(getClass().getName()).log(Level.SEVERE, "No ha sido posible enviar la orden al arduino");
+            }
+        }
+    }
+    
+    @Override
     public void accionar(Dispositivo disp, int valor) {
         ConectorSerial conexionArduino;
         conexionArduino = getConexionArduino(disp.getArduino().getId());

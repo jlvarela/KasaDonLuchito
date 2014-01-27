@@ -17,5 +17,7 @@ public interface ConectionArduinoLocal {
     public void accionar(Dispositivo disp, int valor);
 
     public int consultar(Dispositivo disp);
+
+    public void eliminar(Dispositivo disp);
     
 }

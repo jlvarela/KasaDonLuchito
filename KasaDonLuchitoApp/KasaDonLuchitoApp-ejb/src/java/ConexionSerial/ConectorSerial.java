@@ -54,6 +54,7 @@ public class ConectorSerial implements SerialPortEventListener {
     public final static char TIPO_MSG_MAPEO_PINES = '1';
     public final static char TIPO_MSG_CONSULTA_DATOS = '2';
     public final static char TIPO_MSG_ACCION_DISPOSITIVO = '3';
+    public final static char TIPO_MSG_ELIMINAR_DISPOSITIVO = '7';
     //Tipos de mensajes recibidos desde el arduino
     public final static char TIPO_MSG_CONFIG_REALIZADA = '4';
     public final static char TIPO_MSG_ACCION_REALIZADA = '5';
