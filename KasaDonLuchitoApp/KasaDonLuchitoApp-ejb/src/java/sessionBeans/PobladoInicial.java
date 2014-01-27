@@ -56,7 +56,7 @@ public class PobladoInicial implements PobladoInicialLocal {
         
         Arduino arduino = new Arduino();
         arduino.setNombre("Default");
-        arduino.setPuertoCOM("COM9");
+        arduino.setPuertoCOM("COM11");
         
         Dispositivo d1 = new Dispositivo();
         d1.setArduino(arduino);
@@ -215,11 +215,11 @@ public class PobladoInicial implements PobladoInicialLocal {
         persist(td);
         
         td = new TipoDispositivoUserLevel();
-        td.setNombre("Sensor de temperatura");
+        td.setNombre("Sensor análogo RAW");
         td.setTipoDispositivo(tiposDeDispositivosHardware.get(1));
-        td.getValoresPosibles().add(10);
-        td.getValoresPosibles().add(50);
-        td.setUnidad("°C");
+        td.getValoresPosibles().add(0);
+        td.getValoresPosibles().add(255);
+        td.setUnidad(" Algo");
         td.setRangoValores(true);
         tiposDeDispositivosUserLevel.add(td);
         persist(td);

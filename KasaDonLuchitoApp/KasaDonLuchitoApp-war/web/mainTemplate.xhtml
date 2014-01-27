@@ -19,7 +19,7 @@
         </f:facet>
     </h:head>
 
-    <body data-tarjet=".bs-docs-sidebar" data-spy="scroll" data-twttr-rendered="true" style="background-size: cover; background:url('#{request.contextPath}/resources/img/#{configuracionesMB.getFondoPantalla()}')">
+    <body data-tarjet=".bs-docs-sidebar" data-spy="scroll" data-twttr-rendered="true" style="background-size: cover; min-width: 400px; background:url('#{request.contextPath}/resources/img/#{configuracionesMB.getFondoPantalla()}')">
         
         <p:overlayPanel id="menu" for=":form_botones_barra:btnPanelContext" rendered="#{request.isUserInRole('Administrador') 
                                                              || request.isUserInRole('Usuario')}">
@@ -42,7 +42,7 @@
             </h:form>
         </p:overlayPanel>
         
-        <div class="navbar navbar-inverse navbar-fixed-top" style="z-index: 1000 !important;">
+        <div class="navbar navbar-inverse navbar-fixed-top" style="z-index: 1000 !important; min-width: 400px;">
         	<div class="navbar-inner">
                     <div class="row-fluid special">
                     	<div class="span2">
@@ -73,7 +73,7 @@
                         </div>
                         <div class="span2 text-right">
                             <h:graphicImage alt="Logo #{configuracionesMB.getTitulo()}" 
-                                            width="200px" height="115px"
+                                            style="height:45px; min-width: 80px;"
                                             url="/resources/img/#{configuracionesMB.getLogo()}"/>
                         </div>
                     </div>

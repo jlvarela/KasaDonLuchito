@@ -8,6 +8,7 @@ import entities.Dispositivo;
 import entities.Escena;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
@@ -72,6 +73,7 @@ public class MantenedorTimerAgregarMB implements Serializable {
             escenas.add(elemPojoTemp);
         }
         
+        hora = Calendar.getInstance().getTime();
     }
     
     public void cargarValores() {

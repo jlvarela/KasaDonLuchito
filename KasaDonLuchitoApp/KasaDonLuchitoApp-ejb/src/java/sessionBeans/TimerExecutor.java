@@ -7,6 +7,7 @@ package sessionBeans;
 import entities.Timer;
 import java.util.Calendar;
 import java.util.Collection;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
@@ -120,10 +121,15 @@ public class TimerExecutor implements TimerExecutorLocal {
         
         
         Calendar horaCalendar = Calendar.getInstance();
+        Calendar horaActual = Calendar.getInstance();
+        Calendar horaEjecucion = Calendar.getInstance();
         horaCalendar.setTime(t.getHora());
         int minuto = horaCalendar.get(Calendar.MINUTE);
         int hora = horaCalendar.get(Calendar.HOUR_OF_DAY);
-
+        horaEjecucion.set(Calendar.MINUTE, minuto);
+        horaEjecucion.set(Calendar.HOUR_OF_DAY, hora);
+        horaEjecucion.set(Calendar.SECOND, 0);horaEjecucion.set(Calendar.MILLISECOND, 0);
+        System.out.println("Se creará timer con hora: "+hora + ":"+minuto);
         //Se crea el scheduler
 
         ScheduleExpression schedExpr = new ScheduleExpression();
@@ -137,11 +143,31 @@ public class TimerExecutor implements TimerExecutorLocal {
             ejecucionUnica = true;
         }
         if (ejecucionUnica) {
-            servicioTemporizador.createSingleActionTimer(t.getHora(), new TimerConfig(t.getId().toString(), true));
+            
+            Date horaDateEjecucion;
+            if (horaActual.getTimeInMillis() < horaEjecucion.getTimeInMillis()) {
+                horaDateEjecucion = horaEjecucion.getTime();
+            }
+            else {
+                //horaEjecucion.add(Calendar.DAY_OF_MONTH, 1);
+                long timeMillis = horaEjecucion.getTimeInMillis();
+                timeMillis += 1000*24*60*60;
+                horaEjecucion.setTimeInMillis(timeMillis);
+                horaDateEjecucion = horaEjecucion.getTime();
+            }
+            System.out.println("Creando single action timer: "+horaEjecucion.getTime().toLocaleString());
+            servicioTemporizador.createSingleActionTimer(horaDateEjecucion, new TimerConfig(t.getId().toString(), true));
             
         }
         else {
             schedExpr.dayOfWeek(diasStr);
+            //schedExpr.dayOfWeek(6);
+            System.out.println("Creando calendar timer los días: "+diasStr);
+            String dateStrTemp = "";
+            if (schedExpr.getEnd() != null) {
+                dateStrTemp = schedExpr.getEnd().toGMTString();
+            }
+            System.out.println("El timer tiene end: "+dateStrTemp);
             servicioTemporizador.createCalendarTimer(schedExpr, new TimerConfig(t.getId().toString(), true));
         }
         Logger.getLogger(getClass().getName()).log(Level.INFO, "Timer agregado con id: {0}", t.getId());
@@ -177,6 +203,7 @@ public class TimerExecutor implements TimerExecutorLocal {
     
     @Timeout
     public void ejecutartimerMask(javax.ejb.Timer timer) {
+        System.out.println("Llamado método timeout con sched: "+timer.getNextTimeout().toLocaleString());
         Timer t = null;
         String idTimer = (String)(timer.getInfo());
         for (Timer tTemp : timers) {

@@ -91,7 +91,7 @@ public class ConectionArduino implements ConectionArduinoLocal {
             //List<Integer> listaPines = disp.getPines();
             byte idDispInterno = (byte)disp.getIdInterno().intValue();
             
-            byte[] datosRes = {'3', 2, idDispInterno,(byte)valor};
+            byte[] datosRes = {ConectorSerial.TIPO_MSG_ACCION_DISPOSITIVO, 2/*largomsg*/, idDispInterno,(byte)valor};
             //byte[] datosRes = {'3', 2, 1, 1};
             conexionArduino.sendMessage(datosRes);
         }
@@ -180,7 +180,7 @@ public class ConectionArduino implements ConectionArduinoLocal {
     
     public void configurarDispositivo(Dispositivo disp, ConectorSerial conexionArduino) {
             byte idDispInterno = (byte)disp.getIdInterno().intValue();
-            byte idTipo = (byte)disp.getTipo().getId().byteValue();
+            byte idTipo = (byte)disp.getTipo().getTipoDispositivo().getId().intValue();
             byte pin1 = (byte)disp.getPines().get(0).intValue(); //ARREGLAR PARA WEAS DE MÁS PINES
             System.out.println("Configurando idDisp: "+idDispInterno + " idTipo: "+idTipo+ " pin: " + pin1);
             
