@@ -42,5 +42,7 @@ public interface DispositivoFacadeLocal {
     public List<Integer> getValoresDispositivoSW(Integer id);
 
     public List<Integer> getValoresDispositivoHW(Integer id);
+
+    public int getValorActualDispositivo(Integer idDisp);
     
 }

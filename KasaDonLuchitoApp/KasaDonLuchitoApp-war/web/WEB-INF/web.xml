@@ -12,6 +12,10 @@
         <exception-type>org.jboss.weld.context.NonexistentConversationException</exception-type>
         <location>/faces/errors/500.xhtml?nocid=true</location>
     </error-page>
+    <error-page>
+        <exception-type>javax.faces.application.ViewExpiredException</exception-type>
+        <location>/faces/index.xhtml</location>
+    </error-page>
     <context-param>
         <param-name>javax.faces.PROJECT_STAGE</param-name>
         <param-value>Development</param-value>

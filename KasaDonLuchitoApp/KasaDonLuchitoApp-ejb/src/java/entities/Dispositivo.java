@@ -53,6 +53,8 @@ public class Dispositivo implements Serializable {
     
     private int valorHW;
     
+    @Transient
+    private int valorHWOld;
     
     @Transient
     private boolean configurado;
@@ -140,6 +142,14 @@ public class Dispositivo implements Serializable {
         
     }
 
+    public int getValorHWOld() {
+        return valorHWOld;
+    }
+
+    public void setValorHWOld(int valorHWOld) {
+        this.valorHWOld = valorHWOld;
+    }
+
     /*
      * Se realiza una conversión de rangos
      */
@@ -159,6 +169,51 @@ public class Dispositivo implements Serializable {
             this.valorHW = Math.round(cotaInferiorHW + pendiente*valorSW);
             if (this.valorHW > cotaSuperiorHW) { //Nunca debiese pasar
                 this.valorHW = cotaSuperiorHW;
+            }
+        }
+    }
+    
+    public int getValorSWOld() {
+        List<Integer> valoresPosiblesSW = tipo.getValoresPosibles();
+        List<Integer> valoresPosiblesHW = tipo.getTipoDispositivo().getValoresPosibles();
+        
+        int cotaSuperiorSW = valoresPosiblesSW.get(valoresPosiblesSW.size()-1);
+        int cotaInferiorSW = valoresPosiblesSW.get(0);
+        int cotaSuperiorHW = valoresPosiblesHW.get(valoresPosiblesHW.size()-1);
+        int cotaInferiorHW = valoresPosiblesHW.get(0);
+        if (cotaSuperiorSW - cotaInferiorSW <= 0) { //Evita división por 0
+            return 0;
+        }
+        else {
+            float pendiente = (float)(cotaSuperiorSW - cotaInferiorSW) / (float)(cotaSuperiorHW - cotaInferiorHW);
+            int valorSWOld = Math.round(cotaInferiorSW + pendiente*getValorHWOld());
+            if (valorSWOld > cotaSuperiorSW) { //Nunca debiese pasar
+                valorSWOld = cotaSuperiorSW;
+            }
+            return valorSWOld;
+        }
+        
+    }
+
+    /*
+     * Se realiza una conversión de rangos
+     */
+    public void setValorSWOld(int valorSWOld) {
+        List<Integer> valoresPosiblesSW = tipo.getValoresPosibles();
+        List<Integer> valoresPosiblesHW = tipo.getTipoDispositivo().getValoresPosibles();
+        
+        int cotaSuperiorSW = valoresPosiblesSW.get(valoresPosiblesSW.size()-1);
+        int cotaInferiorSW = valoresPosiblesSW.get(0);
+        int cotaSuperiorHW = valoresPosiblesHW.get(valoresPosiblesHW.size()-1);
+        int cotaInferiorHW = valoresPosiblesHW.get(0);
+        if (cotaSuperiorSW - cotaInferiorSW <= 0) { //Evita división por 0
+            this.valorHWOld = 0;
+        }
+        else {
+            float pendiente = (float)(cotaSuperiorHW - cotaInferiorHW) / (float)(cotaSuperiorSW - cotaInferiorSW);
+            this.valorHWOld = Math.round(cotaInferiorHW + pendiente*valorSWOld);
+            if (this.valorHWOld > cotaSuperiorHW) { //Nunca debiese pasar
+                this.valorHWOld = cotaSuperiorHW;
             }
         }
     }

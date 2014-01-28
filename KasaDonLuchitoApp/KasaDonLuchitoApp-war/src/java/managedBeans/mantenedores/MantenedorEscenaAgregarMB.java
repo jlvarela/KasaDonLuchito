@@ -31,7 +31,7 @@ import sessionBeans.UsuarioFacadeLocal;
  */
 @Named(value = "mantenedorEscenaAgregarMB")
 @ViewScoped
-public class MantenedorEscenaAgregarMB implements Serializable{
+public class MantenedorEscenaAgregarMB implements Serializable {
     @EJB
     private UsuarioFacadeLocal usuarioFacade;
     @EJB

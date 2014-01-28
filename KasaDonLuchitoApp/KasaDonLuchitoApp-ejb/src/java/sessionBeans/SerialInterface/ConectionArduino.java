@@ -5,6 +5,7 @@
 package sessionBeans.SerialInterface;
 
 import ConexionSerial.ConectorSerial;
+import entities.Arduino;
 import entities.Dispositivo;
 import java.util.LinkedList;
 import java.util.List;
@@ -12,8 +13,11 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
+import javax.ejb.EJB;
 import javax.ejb.Singleton;
 import javax.ejb.Startup;
+import sessionBeans.ArduinoFacadeLocal;
+import sessionBeans.DisparadorExecutorLocal;
 
 /**
  *
@@ -22,6 +26,11 @@ import javax.ejb.Startup;
 @Singleton
 @Startup
 public class ConectionArduino implements ConectionArduinoLocal {
+    @EJB
+    private DisparadorExecutorLocal disparadorExecutor;
+    @EJB
+    private ArduinoFacadeLocal arduinoFacade;
+    
     private List<ConectorSerial> conexionesArduinos;
 
     // Add business logic below. (Right-click in editor and choose
@@ -33,6 +42,10 @@ public class ConectionArduino implements ConectionArduinoLocal {
     @PostConstruct 
     public void init() { 
        Logger.getLogger(getClass().getName()).log(Level.INFO, "Iniciando conector serial");
+       List<Arduino> arduinos = arduinoFacade.findAll();
+       for(Arduino a : arduinos) {
+           conectarArduino(a.getPuertoCOM(), a.getId(), a.getDispositivos());
+       }
     }
     
     @PreDestroy 
@@ -65,45 +78,105 @@ public class ConectionArduino implements ConectionArduinoLocal {
                 conexionesArduinos.remove(conexionArduino);
                 Logger.getLogger(getClass().getName()).log(Level.SEVERE, "No ha sido posible enviar la orden al arduino");
             }
+            conexionArduino.getDispositivosManejados()[disp.getIdInterno()] = null; //Se elimina del array en memoria
+        }
+    }
+    
+    private ConectorSerial conectarArduino(String puertoCom, Integer idArduino, List<Dispositivo> dispositivosDelArduino) {
+        ConectorSerial conexionArduino;
+        conexionArduino = new ConectorSerial();
+        List<String> puertosDisp = conexionArduino.searchForPorts();
+        for(String puerto : puertosDisp) {
+            Logger.getLogger(getClass().getName()).log(Level.INFO, "Puerto serial disponible: {0}", puerto);
+        }
+        if (!conexionArduino.connect(puertoCom)) {
+            Logger.getLogger(getClass().getName()).log(Level.SEVERE, "No ha sido posible conectar el arduino en {0}", puertoCom);
+            /*
+            if (!puertosDisp.isEmpty()) {
+                boolean conectado = false;
+                
+                //POR AHORA NO SE INTENTA CONECTAR A OTRO PUERTO COM PARA EVITAR CONECTAR 2 VECES EL MISMO ARDUINO
+                for(String puerto : puertosDisp) {
+                    if(conexionArduino.connect(puerto)) {
+                        Logger.getLogger(getClass().getName()).log(Level.SEVERE, "Temporalmente se ha conectado en {0}", puerto);
+                        conexionArduino.setIdArduino(idArduino);
+                        configurarDispositivos(dispositivosDelArduino, conexionArduino);
+                        conexionesArduinos.add(conexionArduino);
+                        conectado = true;
+                        break;
+                    }
+                }
+                
+                if (!conectado) {
+                    Logger.getLogger(getClass().getName()).log(Level.SEVERE, "No ha sido posible conectar el arduino en ningún puerto serial");
+                }
+             }
+             */
+        }
+        else {
+            conexionArduino.setIdArduino(idArduino);
+            configurarDispositivos(dispositivosDelArduino, conexionArduino);
+            conexionesArduinos.add(conexionArduino);
+        }
+        return conexionArduino;
+    }
+    
+    /*
+     * Actualiza los valores new y old de los dispositivos
+     */
+    @Override
+    public void oneStepTimeValorDispositivos() {
+        for(ConectorSerial con : conexionesArduinos) {
+            for (Dispositivo d : con.getDispositivosManejados()) {
+                if (d != null) {
+                    d.setValorHWOld(d.getValorHW());
+                }
+            }
         }
     }
     
     @Override
-    public void accionar(Dispositivo disp, int valor) {
+    public Dispositivo buscarDispositivoById(int idDisp) {
+        for(ConectorSerial con : conexionesArduinos) {
+            for (Dispositivo d : con.getDispositivosManejados()) {
+                if (d != null) {
+                    if (d.getId().intValue() == idDisp) {
+                        return d;
+                    }
+                }
+            }
+        }
+        return null;
+    }
+    
+    @Override
+    public Dispositivo buscarDispositivoByIdInterno(int idDispInterno) {
+        for(ConectorSerial con : conexionesArduinos) {
+            for (Dispositivo d : con.getDispositivosManejados()) {
+                if (d != null) {
+                    if (d.getIdInterno().intValue() == idDispInterno) {
+                        return d;
+                    }
+                }
+            }
+        }
+        return null;
+    }
+    
+    @Override
+    public void accionar(int idDisp, int valor) {
+        Dispositivo disp;
+        disp = buscarDispositivoById(idDisp);
+        if (disp == null) {
+            return;
+        }
+        disp.setValorHW(valor);
+        
         ConectorSerial conexionArduino;
         conexionArduino = getConexionArduino(disp.getArduino().getId());
         
         if (conexionArduino == null) {
-            conexionArduino = new ConectorSerial();
-            List<String> puertosDisp = conexionArduino.searchForPorts();
-            for(String puerto : puertosDisp) {
-                Logger.getLogger(getClass().getName()).log(Level.SEVERE, "Puerto serial disponible: {0}", puerto);
-            }
-            if (!conexionArduino.connect(disp.getArduino().getPuertoCOM())) {
-                Logger.getLogger(getClass().getName()).log(Level.SEVERE, "No ha sido posible conectar el arduino en {0}", disp.getArduino().getPuertoCOM());
-                if (!puertosDisp.isEmpty()) {
-                    boolean conectado = false;
-                    for(String puerto : puertosDisp) {
-                        if(conexionArduino.connect(puerto)) {
-                            Logger.getLogger(getClass().getName()).log(Level.SEVERE, "Temporalmente se ha conectado en {0}", puerto);
-                            conexionArduino.setIdArduino(disp.getArduino().getId());
-                            configurarDispositivos(disp.getArduino().getDispositivos(), conexionArduino);
-                            conexionesArduinos.add(conexionArduino);
-                            conectado = true;
-                            break;
-                        }
-                    }
-                    if (!conectado) {
-                        Logger.getLogger(getClass().getName()).log(Level.SEVERE, "No ha sido posible conectar el arduino en ningún puerto serial");
-                    }
-                 }
-                
-            }
-            else {
-                conexionArduino.setIdArduino(disp.getArduino().getId());
-                configurarDispositivos(disp.getArduino().getDispositivos(), conexionArduino);
-                conexionesArduinos.add(conexionArduino);
-            }
+            conexionArduino = conectarArduino(disp.getArduino().getPuertoCOM(), disp.getArduino().getId(), disp.getArduino().getDispositivos());
         }
         
         if (conexionArduino.isConnected()) {
@@ -113,6 +186,11 @@ public class ConectionArduino implements ConectionArduinoLocal {
             byte[] datosRes = {ConectorSerial.TIPO_MSG_ACCION_DISPOSITIVO, 2/*largomsg*/, idDispInterno,(byte)valor};
             //byte[] datosRes = {'3', 2, 1, 1};
             conexionArduino.sendMessage(datosRes);
+            
+            Dispositivo dispositivo = conexionArduino.modificarValorDispositivo(idDisp, valor);
+            if (dispositivo != null)
+                disparadorExecutor.comprobarCondicionesDisparadores(dispositivo); //Se avisa al ejecutor de disparadores
+            
         }
         else {
             conexionesArduinos.remove(conexionArduino);
@@ -127,36 +205,7 @@ public class ConectionArduino implements ConectionArduinoLocal {
         conexionArduino = getConexionArduino(disp.getArduino().getId());
         
         if (conexionArduino == null) {
-            conexionArduino = new ConectorSerial();
-            List<String> puertosDisp = conexionArduino.searchForPorts();
-            for(String puerto : puertosDisp) {
-                Logger.getLogger(getClass().getName()).log(Level.SEVERE, "Puerto serial disponible: {0}", puerto);
-            }
-            if (!conexionArduino.connect(disp.getArduino().getPuertoCOM())) {
-                Logger.getLogger(getClass().getName()).log(Level.SEVERE, "No ha sido posible conectar el arduino en {0}", disp.getArduino().getPuertoCOM());
-                if (!puertosDisp.isEmpty()) {
-                    boolean conectado = false;
-                    for(String puerto : puertosDisp) {
-                        if(conexionArduino.connect(puerto)) {
-                            Logger.getLogger(getClass().getName()).log(Level.SEVERE, "Temporalmente se ha conectado en {0}", puerto);
-                            conexionArduino.setIdArduino(disp.getArduino().getId());
-                            configurarDispositivos(disp.getArduino().getDispositivos(), conexionArduino);
-                            conexionesArduinos.add(conexionArduino);
-                            conectado = true;
-                            break;
-                        }
-                    }
-                    if (!conectado) {
-                        Logger.getLogger(getClass().getName()).log(Level.SEVERE, "No ha sido posible conectar el arduino en ningún puerto serial");
-                    }
-                 }
-                
-            }
-            else {
-                conexionArduino.setIdArduino(disp.getArduino().getId());
-                configurarDispositivos(disp.getArduino().getDispositivos(), conexionArduino);
-                conexionesArduinos.add(conexionArduino);
-            }
+            conexionArduino = conectarArduino(disp.getArduino().getPuertoCOM(), disp.getArduino().getId(), disp.getArduino().getDispositivos());
         }
         
         if (conexionArduino.isConnected()) {
@@ -186,13 +235,13 @@ public class ConectionArduino implements ConectionArduinoLocal {
         }
         for(Dispositivo disp : listaDispositivos) {
             configurarDispositivo(disp, conexionArduino);
-            int index = conexionArduino.getDispositivosManejados().indexOf(disp);
-            if (index >= 0) {
-                conexionArduino.getDispositivosManejados().get(index).setConfigurado(true);
+            Dispositivo index = conexionArduino.getDispositivosManejados()[disp.getIdInterno()];
+            if (index != null) {
+                conexionArduino.getDispositivosManejados()[disp.getIdInterno()].setConfigurado(true);
             }
             else {
                 disp.setConfigurado(true);
-                conexionArduino.getDispositivosManejados().add(disp);
+                conexionArduino.getDispositivosManejados()[disp.getIdInterno()] = disp;
             }
         }
     }

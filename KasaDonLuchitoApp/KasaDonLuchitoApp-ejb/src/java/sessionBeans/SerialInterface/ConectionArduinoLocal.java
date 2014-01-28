@@ -14,10 +14,16 @@ import javax.ejb.Local;
 @Local
 public interface ConectionArduinoLocal {
 
-    public void accionar(Dispositivo disp, int valor);
+    public void accionar(int idDisp, int valor);
 
     public int consultar(Dispositivo disp);
 
     public void eliminar(Dispositivo disp);
+
+    public void oneStepTimeValorDispositivos();
+
+    public Dispositivo buscarDispositivoById(int idDisp);
+
+    public Dispositivo buscarDispositivoByIdInterno(int idDispInterno);
     
 }

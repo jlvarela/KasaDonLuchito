@@ -5,6 +5,7 @@
 package managedBeans.mantenedores;
 
 import entities.Dispositivo;
+import java.io.Serializable;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -14,9 +15,9 @@ import javax.annotation.ManagedBean;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.inject.Named;
-import javax.enterprise.context.RequestScoped;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
+import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import managedBeans.ConfiguracionesMB;
 import org.primefaces.event.SlideEndEvent;
@@ -30,8 +31,8 @@ import sessionBeans.DispositivoFacadeLocal;
  */
 @ManagedBean
 @Named(value = "mantenedorDispositivosVerListadoMB")
-@RequestScoped
-public class MantenedorDispositivosVerListadoMB {
+@ViewScoped
+public class MantenedorDispositivosVerListadoMB implements Serializable {
     @EJB
     private DispositivoFacadeLocal dispositivoFacade;
     
@@ -42,6 +43,7 @@ public class MantenedorDispositivosVerListadoMB {
     private ConfiguracionesMB configMB;
     
     private List<DispositivoPojo> lista;
+    
     private List<DispositivoPojo> listaBusqueda;
     
     @PostConstruct
@@ -111,8 +113,15 @@ public class MantenedorDispositivosVerListadoMB {
     public MantenedorDispositivosVerListadoMB() {
     }
     
-    public void verificarValor(Integer id) {
+    public void verificarValor(Integer idDispositivo) {
         //Extrañamente funciona aunque haga nada, creo que es porque inicia el init
+        int valor = dispositivoFacade.getValorActualDispositivo(idDispositivo);
+        for (DispositivoPojo dp : lista) {
+            if (dp.getId() == idDispositivo) {
+                dp.setValor(valor);
+                return;
+            }
+        }
     }
     
     public int getIntervaloActualizacion() {

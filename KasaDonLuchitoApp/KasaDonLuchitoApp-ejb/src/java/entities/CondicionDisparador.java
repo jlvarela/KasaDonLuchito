@@ -11,6 +11,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.Transient;
 
 /**
  *
@@ -34,31 +35,12 @@ public class CondicionDisparador implements Serializable {
     private int valorNew;
     
     private String comparador; //ENUMERACION
-
-    public int getValorOld() {
-        return valorOld;
-    }
-
-    public void setValorOld(int valorOld) {
-        this.valorOld = valorOld;
-    }
-
-    public int getValorNew() {
-        return valorNew;
-    }
-
-    public void setValorNew(int valorNew) {
-        this.valorNew = valorNew;
-    }
-
-    public String getComparador() {
-        return comparador;
-    }
-
-    public void setComparador(String comparador) {
-        this.comparador = comparador;
-    }
     
+    private String comparadorOld;
+    
+    @Transient
+    private boolean cumplida; //Indica si la condición actualmente se está cumpliendo o no, así evita comprobarla cada vez
+
     @ManyToOne
     @JoinColumn(nullable = false)
     private Disparador disparador;
@@ -89,6 +71,45 @@ public class CondicionDisparador implements Serializable {
 
     public void setDispositivo(Dispositivo dispositivo) {
         this.dispositivo = dispositivo;
+    }
+    public int getValorOld() {
+        return valorOld;
+    }
+
+    public boolean isCumplida() {
+        return cumplida;
+    }
+
+    public void setCumplida(boolean cumplida) {
+        this.cumplida = cumplida;
+    }
+
+    public void setValorOld(int valorOld) {
+        this.valorOld = valorOld;
+    }
+
+    public int getValorNew() {
+        return valorNew;
+    }
+
+    public void setValorNew(int valorNew) {
+        this.valorNew = valorNew;
+    }
+
+    public String getComparador() {
+        return comparador;
+    }
+
+    public void setComparador(String comparador) {
+        this.comparador = comparador;
+    }
+
+    public String getComparadorOld() {
+        return comparadorOld;
+    }
+
+    public void setComparadorOld(String comparadorOld) {
+        this.comparadorOld = comparadorOld;
     }
 
     @Override

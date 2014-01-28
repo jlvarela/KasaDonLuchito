@@ -155,14 +155,20 @@ public class DispositivoFacade extends AbstractFacade<Dispositivo> implements Di
         catch (NoResultException nre) {
             return;
         }
-        actualizarDB(disp, valor);
-        conectionArduino.accionar(disp, disp.getValorHW());
+        
+        disp.setValorSW(valor);
+        //edit(disp);
+        conectionArduino.accionar(disp.getId(), disp.getValorHW());
         
     }
     
-    private void actualizarDB(Dispositivo disp, int valor) {
-        disp.setValorSW(valor);
-        edit(disp);
+    @Override
+    public int getValorActualDispositivo(Integer idDisp) {
+        Dispositivo d = conectionArduino.buscarDispositivoById(idDisp);
+        if (d != null) {
+            return d.getValorSW();
+        }
+        return 0;
     }
     
     @Override

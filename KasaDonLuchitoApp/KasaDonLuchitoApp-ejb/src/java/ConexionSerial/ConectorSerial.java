@@ -20,6 +20,7 @@ import java.util.logging.Logger;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
+import sessionBeans.DisparadorExecutorLocal;
 import sessionBeans.DispositivoFacadeLocal;
 
 /**
@@ -27,6 +28,7 @@ import sessionBeans.DispositivoFacadeLocal;
  * @author victor
  */
 public class ConectorSerial implements SerialPortEventListener {
+    DisparadorExecutorLocal disparadorExecutor = lookupDisparadorExecutorLocal();
     DispositivoFacadeLocal dispositivoFacade = lookupDispositivoFacadeLocal();
     private Integer idArduino;
     private Enumeration ports = null;
@@ -60,9 +62,10 @@ public class ConectorSerial implements SerialPortEventListener {
     public final static char TIPO_MSG_ACCION_REALIZADA = '5';
     public final static char TIPO_MSG_DATOS_SENSOR = '6';
     
-    final static int TAM_HEADER = 2;
-    final static int MAX_BODY = 126;
-    final static int TIEMPO_MAXIMO_REBOOT_MSG = 6000;
+    public final static int TAM_HEADER = 2;
+    public final static int MAX_BODY = 126;
+    public final static int TIEMPO_MAXIMO_REBOOT_MSG = 6000;
+    public final static int MAX_CANTIDAD_DISPOSITIVOS = 20; //CAMBIARLO SI SE USA OTRO MODELO DE ARDUINO
     
     byte[] headerMsg = new byte[TAM_HEADER];
     byte[] bodyMsg = new byte[MAX_BODY+1];
@@ -77,7 +80,7 @@ public class ConectorSerial implements SerialPortEventListener {
     long previousMillis = 0;
     long currentMillis = 0;
     
-    List<Dispositivo> dispositivosManejados;
+    Dispositivo[] dispositivosManejados;
     
     public void initListener()
     {
@@ -272,7 +275,7 @@ public class ConectorSerial implements SerialPortEventListener {
     }
 
     public ConectorSerial() {
-        dispositivosManejados = new LinkedList<Dispositivo>();
+        dispositivosManejados = new Dispositivo[ConectorSerial.MAX_CANTIDAD_DISPOSITIVOS];
     }
     
     public void close() throws Exception{
@@ -327,12 +330,18 @@ public class ConectorSerial implements SerialPortEventListener {
             int idSensor = (int)bodyMsg[0];
             int valorRecibido = (int)bodyMsg[1];
             if (valorRecibido < 0) {
-                valorRecibido = valorRecibido+128;
+                valorRecibido = valorRecibido+255;
             }
             //LO CORRECTO ES ENVIARLO A UNA COLA O MESSAGE DRIVEN BEAN
+            Dispositivo dispositivo = modificarValorDispositivo(idSensor, valorRecibido);
+            if (dispositivo != null)
+                disparadorExecutor.comprobarCondicionesDisparadores(dispositivo); //Se avisa al ejecutor de disparadores
+            
+            /*
             Dispositivo d = dispositivoFacade.findByIdInterno(idSensor);
             d.setValorHW(valorRecibido);
             dispositivoFacade.edit(d);
+            */
             System.out.println("Ha llegado un mensaje de datos del dispositivo con id: "+idSensor + " con valor: "+valorRecibido);
         }
         else {
@@ -345,8 +354,20 @@ public class ConectorSerial implements SerialPortEventListener {
         }
         
     }
+    
+    public Dispositivo modificarValorDispositivo(int idSensor, int valorRecibido) {
+        for(Dispositivo d : dispositivosManejados) {
+            if (d != null) {
+                if (d.getIdInterno().intValue() == idSensor) {
+                    d.setValorHW(valorRecibido);
+                    return d;
+                }
+            }
+        }
+        return null;
+    }
 
-    public List<Dispositivo> getDispositivosManejados() {
+    public Dispositivo[] getDispositivosManejados() {
         return dispositivosManejados;
     }
 
@@ -354,6 +375,16 @@ public class ConectorSerial implements SerialPortEventListener {
         try {
             Context c = new InitialContext();
             return (DispositivoFacadeLocal) c.lookup("java:global/KasaDonLuchitoApp/KasaDonLuchitoApp-ejb/DispositivoFacade!sessionBeans.DispositivoFacadeLocal");
+        } catch (NamingException ne) {
+            Logger.getLogger(getClass().getName()).log(Level.SEVERE, "exception caught", ne);
+            throw new RuntimeException(ne);
+        }
+    }
+
+    private DisparadorExecutorLocal lookupDisparadorExecutorLocal() {
+        try {
+            Context c = new InitialContext();
+            return (DisparadorExecutorLocal) c.lookup("java:global/KasaDonLuchitoApp/KasaDonLuchitoApp-ejb/DisparadorExecutor!sessionBeans.DisparadorExecutorLocal");
         } catch (NamingException ne) {
             Logger.getLogger(getClass().getName()).log(Level.SEVERE, "exception caught", ne);
             throw new RuntimeException(ne);

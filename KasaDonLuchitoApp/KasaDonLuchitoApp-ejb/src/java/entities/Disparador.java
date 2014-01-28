@@ -16,6 +16,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.Transient;
 
 /**
  *
@@ -31,6 +32,9 @@ public class Disparador implements Serializable {
     
     @Column(nullable = false)
     private boolean activo;
+    
+    @Transient
+    private boolean actuarAhora; //Indica si al cuplirse las condiciones, debe o no realizarse
     
     @OneToMany(mappedBy = "disparador", cascade = CascadeType.REMOVE)
     private List<CondicionDisparador> condiciones;
@@ -103,6 +107,14 @@ public class Disparador implements Serializable {
 
     public void setEscenaQueAcciona(Escena escenaQueAcciona) {
         this.escenaQueAcciona = escenaQueAcciona;
+    }
+
+    public boolean isActuarAhora() {
+        return actuarAhora;
+    }
+
+    public void setActuarAhora(boolean actuarAhora) {
+        this.actuarAhora = actuarAhora;
     }
 
     @Override
