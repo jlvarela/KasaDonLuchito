@@ -275,7 +275,7 @@ void configurarDispositivo() {
         }
         
         //Por defecto estos son y siempre serán inputs
-        dispositivos[idInterno] = (Dispositivo){idInterno, tipoDispositivo, {numPin}, {250}, 0, 0};
+        dispositivos[idInterno] = (Dispositivo){idInterno, tipoDispositivo, {numPin}, {100}, 0, 0};
         break;
         
         
@@ -397,7 +397,7 @@ void consultarDispositivo() {
     enviarMsgDebug("Error de actuacion: id invalido, fuera de rango");
     return;
   }
-  enviarMsgDebug("consultando dispositivo");
+  //enviarMsgDebug("consultando dispositivo");
   
   tipoDispositivo = dispositivos[idInterno].tipo_dispositivo;
   switch (tipoDispositivo) { //En esta posición del bodyMsg está el tipo de dispositivo
@@ -466,7 +466,7 @@ void actuarDispositivo() {
   }
   
   tipoDispositivo = dispositivos[idInterno].tipo_dispositivo;
-  enviarMsgDebug("actuando dispositivo");
+  //enviarMsgDebug("actuando dispositivo");
   switch (tipoDispositivo) { //En esta posición del bodyMsg está el tipo de dispositivo
     case ACTUADOR_ON_OFF:
         accionTemp = bodyMsg[1];
@@ -513,14 +513,7 @@ void leerSensores() {
   
   for (idInterno = 0; idInterno < MAX_CANTIDAD_DISPOSITIVOS; idInterno++) {
     tipoDispositivo = dispositivos[idInterno].tipo_dispositivo;
-    /*
-    if (idInterno == 0) {
-      if (wea %10000 == 0) {
-        enviarMsgDebug("a");
-      }
-      wea++;
-    }
-    */
+    
     if (tipoDispositivo != 0) { //Está asignado si vale distinto de 0
       
       switch (tipoDispositivo) { //En esta posición del bodyMsg está el tipo de dispositivo
@@ -585,7 +578,6 @@ void leerSensores() {
         case SENSOR_PROXIMIDAD_ULTRASONIDO:
         
           if ((currentMillisBeforeMuestreo - dispositivos[idInterno].ultimoMuestreo) > dispositivos[idInterno].configuraciones[1]) {
-            //enviarMsgDebug("u");
             delay(2); //Espera para recuperar el conversor Análogo-digital
             ultraTemp.init(dispositivos[idInterno].pinesUsados[0], dispositivos[idInterno].pinesUsados[1], dispositivos[idInterno].configuraciones[0]);
             valorTemp = ultraTemp.Ranging(CM);

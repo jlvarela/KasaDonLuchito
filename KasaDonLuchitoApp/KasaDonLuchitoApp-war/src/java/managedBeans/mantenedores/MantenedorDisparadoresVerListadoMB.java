@@ -47,6 +47,7 @@ public class MantenedorDisparadoresVerListadoMB {
         for(Disparador t : listaTemp) {
             elemPojo = new DisparadorPojo();
             elemPojo.setId(t.getId());
+            elemPojo.setCantCondiciones(t.getCondiciones().size());
             elemPojo.setNombre(t.getNombre());
             elemPojo.setActivado(t.isActivo());
             if (t.getDispositivoQueAcciona() != null) {

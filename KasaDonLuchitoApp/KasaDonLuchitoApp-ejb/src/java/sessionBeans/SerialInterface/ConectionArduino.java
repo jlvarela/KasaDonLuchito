@@ -18,6 +18,8 @@ import javax.ejb.Singleton;
 import javax.ejb.Startup;
 import sessionBeans.ArduinoFacadeLocal;
 import sessionBeans.DisparadorExecutorLocal;
+import sessionBeans.DispositivoFacade;
+import sessionBeans.DispositivoFacadeLocal;
 
 /**
  *
@@ -26,6 +28,8 @@ import sessionBeans.DisparadorExecutorLocal;
 @Singleton
 @Startup
 public class ConectionArduino implements ConectionArduinoLocal {
+    @EJB
+    private DispositivoFacadeLocal dispositivoFacade;
     @EJB
     private DisparadorExecutorLocal disparadorExecutor;
     @EJB
@@ -58,6 +62,13 @@ public class ConectionArduino implements ConectionArduinoLocal {
             }
             catch (Exception e) {
                 Logger.getLogger(getClass().getName()).log(Level.INFO, "Error al cerrar el puerto serial");
+            }
+            
+            //Se guarda el estado de los dispositivos en la DB
+            for (Dispositivo d : c.getDispositivosManejados()) {
+                if (d != null) {
+                    dispositivoFacade.edit(d);
+                }
             }
         }
     }

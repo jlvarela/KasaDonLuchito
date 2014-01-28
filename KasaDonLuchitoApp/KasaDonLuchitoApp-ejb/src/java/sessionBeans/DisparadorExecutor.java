@@ -47,16 +47,23 @@ public class DisparadorExecutor implements DisparadorExecutorLocal {
 
     @Override
     public void comprobarCondicionesDisparadores(Dispositivo dispositivoCambiado) {
-        System.out.println("Ha ocurrido un cambio en el dispositivo con id: "+dispositivoCambiado.getId() + " su valorNewHW es: "+dispositivoCambiado.getValorHW());
+        System.out.println("Ha ocurrido un cambio en el dispositivo con id: "+dispositivoCambiado.getId() + " su valorNewHW y SW es: "+dispositivoCambiado.getValorHW()+ " "+dispositivoCambiado.getValorSW());
         int valorOld, valorNew;
         valorOld = dispositivoCambiado.getValorSWOld();
         valorNew = dispositivoCambiado.getValorSW();
         boolean todasCumplidas;
+        Dispositivo dtemp;
         
         //Compruebo condiciones
         for(Disparador disparador : listaDisparadores) {
+            System.out.println("Comprobando disparador con id: "+disparador.getId());
             todasCumplidas = true;
+            disparador.setActuarAhora(false);
             for(CondicionDisparador cond : disparador.getCondiciones()) {
+                System.out.println("Comprobando condición con id: "+cond.getId());
+                dtemp = conectionArduino.buscarDispositivoById(cond.getDispositivo().getId().intValue());
+                valorNew = dtemp.getValorSW();
+                valorOld = dtemp.getValorSWOld();
                 cond.setCumplida(seCumpleCondicion(cond, valorOld, valorNew));
                 
                 if (!cond.isCumplida()) {
@@ -64,19 +71,27 @@ public class DisparadorExecutor implements DisparadorExecutorLocal {
                 }
             }
             if (todasCumplidas) {
+                System.out.println("Se cumplen todas las condiciones, marcando para actuar...");
                 disparador.setActuarAhora(true);
             }
-        }
-        
-        //Realizo acciones
-        for(Disparador disparador : listaDisparadores) {
-            if (disparador.isActuarAhora()) {
-                hacerAccion(disparador);
+            else {
+                System.out.println("No se cumplieron las condiciones");
             }
         }
         
         //Actualizar valores de dispositivos
         conectionArduino.oneStepTimeValorDispositivos();
+        
+        //Realizo acciones
+        for(Disparador disparador : listaDisparadores) {
+            if (disparador.isActuarAhora()) {
+                disparador.setActuarAhora(false);
+                System.out.println("Actuando lo que se marcó");
+                hacerAccion(disparador);
+            }
+        }
+        
+        
     }
     
     private boolean seCumpleCondicion(CondicionDisparador cond, int valorOld, int valorAct) {
@@ -86,6 +101,9 @@ public class DisparadorExecutor implements DisparadorExecutorLocal {
         //Podrían ser int
         float valorActCondicion = cond.getValorNew();
         float valorOldCondicion = cond.getValorOld();
+        
+        System.out.println("Comprobando condición comp: "+comp_op + " comp_old: "+comp_op_old + " valorOldCond: "+ valorOldCondicion + " valorActCond: "+ valorActCondicion +" valorOld: "+valorOld+ " valorAct: "+valorAct);
+        
         if (comp_op.equals(CondicionDisparador.IGUAL_QUE)) { //entonces el valor actual debe ser igual al valor del dispositivo
 		if (valorActCondicion == valorAct) {
 			
@@ -187,7 +205,7 @@ public class DisparadorExecutor implements DisparadorExecutorLocal {
 		
 	}
         
-        return true;
+        return false;
     }
     
     private void hacerAccion(Disparador d) {
